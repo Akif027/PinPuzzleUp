@@ -7,13 +7,20 @@ public class PatternPyramidGenerator : MonoBehaviour
     public PatternType patternType;
     public float spacing = 100f;   // Adjust this value according to your slot size and desired spacing
     public Camera mainCamera;
+
+
+    public GameObject rightArrowPrefab;
+    public GameObject leftArrowPrefab;
+    public GameObject upArrowPrefab;
+    public GameObject downArrowPrefab;
     private int[,] patternPyramid = new int[,]
     {
-        { 1, 1, 0, 0, 0 },
-        { 1, 1, 1, 0, 0 },
-        { 1, 1, 1, 1, 0 },
-        { 1, 1, 1, 1, 1 },
-        { 0, 0, 0, 0, 1 }
+        { 0, 2, 0, 0, 0 ,0,0},
+        { 2, 1, 1, 2, 0,0 ,0},
+        { 0, 1, 1,1, 2,0 ,0},
+        { 2, 1, 1, 1, 1,2 ,0},
+        { 0, 1, 1, 1, 1 ,1,2},
+          { 0, 0, 2, 0, 2 ,1,0}
     };
 
     private int[,] patternVegas = new int[,]
@@ -55,30 +62,43 @@ public class PatternPyramidGenerator : MonoBehaviour
 
     void GeneratePattern(int[,] pattern)
     {
-        float patternWidth = pattern.GetLength(1) * spacing;
-        float patternHeight = pattern.GetLength(0) * spacing;
-
-        // Calculate the offset to center the pattern
-        float xOffset = -patternWidth / 2 + spacing / 2;
-        float yOffset = patternHeight / 2 - spacing / 2;
-
         for (int i = 0; i < pattern.GetLength(0); i++)
         {
             for (int j = 0; j < pattern.GetLength(1); j++)
             {
-                if (pattern[i, j] == 1)  // Only instantiate if the pattern value is 1
+                int element = pattern[i, j];
+
+                if (element == 1)
                 {
-                    // Instantiate slot prefab and set as a child of the parent object
-                    GameObject slot = Instantiate(slotPrefab, transform);
-
-                    // Calculate and set the local position of the slot relative to the parent
-                    slot.transform.localPosition = new Vector3(j * spacing + xOffset, -i * spacing + yOffset, 0);
-
-                    // Optionally set the name or tag for easier identification
-                    slot.name = $"Slot_{i}_{j}";
+                    InstantiateElement(slotPrefab, i, j);
+                }
+                else if (element == 2)
+                {
+                    InstantiateElement(rightArrowPrefab, i, j);
+                }
+                else if (element == 3)
+                {
+                    InstantiateElement(leftArrowPrefab, i, j);
+                }
+                else if (element == 4)
+                {
+                    InstantiateElement(upArrowPrefab, i, j);
+                }
+                else if (element == 5)
+                {
+                    InstantiateElement(downArrowPrefab, i, j);
                 }
             }
         }
+    }
+
+    void InstantiateElement(GameObject prefab, int i, int j)
+    {
+        GameObject element = Instantiate(prefab, transform);
+        element.transform.localPosition = new Vector3(j * spacing, -i * spacing, 0);
+        element.name = $"{prefab.name}_{i}_{j}";
+
+
     }
 
     public enum PatternType
