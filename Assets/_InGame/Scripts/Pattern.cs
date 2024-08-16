@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Pattern : MonoBehaviour
@@ -13,6 +14,7 @@ public class Pattern : MonoBehaviour
     public GameObject VegasAContainer;
     public GameObject ArtAContainer;
 
+    private List<GameObject> Slots = new List<GameObject>();
     private int[,] patternPyramid = new int[,]
     {
         { 1, 1, 0, 0, 0 },
@@ -81,7 +83,12 @@ public class Pattern : MonoBehaviour
         if (pattern != null)
             GeneratePattern(pattern);
     }
+    public List<GameObject> GetAllSlots()
+    {
 
+        return Slots;
+
+    }
     // Method to destroy the existing pattern in the editor
     public void DestroyPatternInEditor()
     {
@@ -123,7 +130,7 @@ public class Pattern : MonoBehaviour
                 {
                     // Instantiate slot prefab and set as a child of the parent object
                     GameObject slot = Instantiate(slotPrefab, transform);
-
+                    Slots.Add(slot);
                     // Calculate and set the local position of the slot relative to the parent
                     slot.transform.localPosition = new Vector3(j * spacing + xOffset, -i * spacing + yOffset, 0);
 
@@ -139,5 +146,11 @@ public class Pattern : MonoBehaviour
         Pyramid,
         Vegas,
         Art
+    }
+
+    void OnDisable()
+    {
+        Slots.Clear();
+
     }
 }

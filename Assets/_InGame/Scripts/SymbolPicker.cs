@@ -6,9 +6,12 @@ public class SymbolPicker : MonoBehaviour
 {
 
     Button button;
+
+    Image childImage;
     void Start()
     {
         button = GetComponent<Button>();
+        childImage = GetComponentInChildren<Image>();
         if (button != null)
         {
             button.onClick.AddListener(HandleClick);
@@ -17,7 +20,7 @@ public class SymbolPicker : MonoBehaviour
 
     public void HandleClick()
     {
-        Image childImage = GetComponentInChildren<Image>();
+
         if (childImage != null)
         {
             EventManager.ButtonClickedSymbol(childImage.gameObject);

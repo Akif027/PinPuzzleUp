@@ -5,14 +5,17 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
     public GameData gameData;
     public GameObject ImageSymbolContainer;
     public List<Sprite> symbolContainer = new List<Sprite>();
-    private HashSet<GameObject> processedObjects = new HashSet<GameObject>();
+    public IReadOnlyCollection<GameObject> ProcessedObjects => processedObjects;
     public List<GameObject> PoolSlots = new List<GameObject>();
+    private HashSet<GameObject> processedObjects = new HashSet<GameObject>();
 
-    private static readonly System.Random random = new System.Random();
-    public static GameManager Instance { get; private set; }
+    [SerializeField] Pattern pattern;
+
+
     private void Awake()
     {
         // Singleton pattern to ensure one instance of GameManager
@@ -46,20 +49,38 @@ public class GameManager : MonoBehaviour
 
     public void ChangeChildImages(GameObject parentContainer)
     {
-        if (!parentContainer || !gameData.sprites.Any())
-            return;
+        if (!parentContainer || !gameData.sprites.Any()) return;
 
         var random = new System.Random();
+
+        // Iterate through all Image components in the hierarchy
         foreach (var img in parentContainer.GetComponentsInChildren<Image>(true))
         {
-            // Corrected condition: Now it correctly skips direct children of the parentContainer
-            if (img.transform.parent == parentContainer.transform)
-                continue;
+            // Skip the direct children of the parentContainer
+            if (img.transform.parent == parentContainer.transform) continue;
 
-            img.sprite = gameData.sprites[random.Next(gameData.sprites.Count)];
+            // Check if the sprite is null and there are available sprites
+            if (img.sprite == null && gameData.sprites.Any())
+            {
+                // Assign a new sprite from the available list
+                img.sprite = gameData.sprites[random.Next(gameData.sprites.Count)];
+            }
         }
     }
-
+    public void ResetProcessedImages()
+    {
+        foreach (var processedObject in processedObjects)
+        {
+            foreach (Transform child in processedObject.transform)
+            {
+                var imgComponent = child.GetComponent<Image>();
+                if (imgComponent != null)
+                {
+                    imgComponent.sprite = null;
+                }
+            }
+        }
+    }
     public void AddChildSprite(GameObject childObject)
     {
         Debug.Log($"Searching in: {childObject.name}");
@@ -98,15 +119,19 @@ public class GameManager : MonoBehaviour
         {
             foreach (Transform child in PoolSlots[i].transform)
             {
-                child.gameObject.SetActive(true);
+                //  child.gameObject.SetActive(true);
                 var img = child.GetComponent<Image>();
 
                 if (img != null)
                 {
                     img.sprite = symbolList[i];
+
                     break;
                 }
             }
+            ResetProcessedImages();
+            ChangeChildImages(ImageSymbolContainer);
+
         }
 
 
@@ -119,4 +144,33 @@ public class GameManager : MonoBehaviour
         processedObjects.Clear();
 
     }
+
+
+    #region  ManinGameLogic 
+    void Update()
+    {
+        // CheckForEmptySlot();
+
+    }
+    public void CheckForEmptySlot()
+    {
+        if (pattern.GetAllSlots() == null) return;
+
+
+        foreach (var gameObject in pattern.GetAllSlots())
+        {
+            foreach (Transform child in gameObject.transform)
+            {
+                var img = child.GetComponent<Image>();
+                if (img != null && img.sprite == null)
+                {
+                    Debug.LogWarning($"Child {child.name} of {gameObject.name} has an Image component with a null sprite.");
+                }
+            }
+        }
+
+
+    }
+
+    #endregion
 }
