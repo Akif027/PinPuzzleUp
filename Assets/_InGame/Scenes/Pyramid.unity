@@ -251,6 +251,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameData: {fileID: 11400000, guid: 01d1b5115d9d61d4281251820cd6664f, type: 2}
   ImageSymbolContainer: {fileID: 286250150}
+  symbolContainer: []
+  processedObjects: []
+  PoolSlots: []
 --- !u!4 &22551298
 Transform:
   m_ObjectHideFlags: 0
@@ -2185,23 +2188,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef28616972cdb2743a37747ade6a3bc6, type: 3}
---- !u!1 &1052817074 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6150132863470309953, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
-  m_PrefabInstance: {fileID: 1246092519625168969}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1052817076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1052817074}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbd5f2ea6a44bdd438a286f450f8af93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1067731728
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3325,9 +3311,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1794946379}
     m_Modifications:
+    - target: {fileID: 1141451908343146651, guid: ef28616972cdb2743a37747ade6a3bc6, type: 3}
+      propertyPath: rayLength
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 1141451908343146651, guid: ef28616972cdb2743a37747ade6a3bc6, type: 3}
+      propertyPath: patternScript
+      value: 
+      objectReference: {fileID: 522704272}
+    - target: {fileID: 1141451908343146651, guid: ef28616972cdb2743a37747ade6a3bc6, type: 3}
+      propertyPath: slotLayerMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 7105469081447835487, guid: ef28616972cdb2743a37747ade6a3bc6, type: 3}
       propertyPath: m_Name
       value: Arrow
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105469081447835487, guid: ef28616972cdb2743a37747ade6a3bc6, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8479716157642044505, guid: ef28616972cdb2743a37747ade6a3bc6, type: 3}
       propertyPath: m_Pivot.x
@@ -4760,10 +4762,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6150132863470309953, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1052817076}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

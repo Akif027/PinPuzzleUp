@@ -13,5 +13,15 @@ MonoBehaviour:
   m_Name: GameData
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 21300000, guid: 13ea70f0e75474448aa8a75956c70360, type: 3}
-  - {fileID: 21300000, guid: 1ecadf4f871a5eb4ba0501da168047af, type: 3}
+  - {fileID: 21300000, guid: ceb7e5a0251fd314b8b4bc813b9aa0ed, type: 3}
+  - {fileID: 21300000, guid: 44a207c3a25dd9a4082a1183c70a6632, type: 3}
+  - {fileID: 21300000, guid: 91b3718d663d50b42806fea073ebb147, type: 3}
+  - {fileID: 21300000, guid: c4fa13eb840647648893f0acae3911d4, type: 3}
+  - {fileID: 21300000, guid: 10ca0242088490349b2d31c7e936d374, type: 3}
+  - {fileID: 21300000, guid: 92c4f3d8eaee8c54db73c988c1e0f19a, type: 3}
+  - {fileID: 21300000, guid: 7a81f84ac9d15084194923483e6e99ac, type: 3}
+  - {fileID: 21300000, guid: ecffaeb02ad56e949979517daf52dc21, type: 3}
+  - {fileID: 21300000, guid: f4963e86a2ed0f343a5c4842debdde59, type: 3}
+  - {fileID: 21300000, guid: 78b9a20fa38ad694fbfa715b37215c66, type: 3}
+  - {fileID: 21300000, guid: fc8aca6c103ee2e42b2121a74d8ef1c9, type: 3}
+  - {fileID: 21300000, guid: a3308f86539ae2a4782ac105a118d6aa, type: 3}
