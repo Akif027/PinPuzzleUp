@@ -147,6 +147,14 @@ public class Pattern : MonoBehaviour
         CheckPatternForMatches(matchedSlots, true);
         CheckPatternForMatches(matchedSlots, false);
 
+        // Calculate points before destroying the slots
+        PointSystem pointSystem = GetComponent<PointSystem>();
+        if (pointSystem != null)
+        {
+            pointSystem.CalculatePoints(matchedSlots);
+        }
+
+        // Now destroy the matched slots
         foreach (var slot in matchedSlots)
         {
             if (slot != null)
@@ -154,6 +162,7 @@ public class Pattern : MonoBehaviour
                 Destroy(slot);
             }
         }
+
     }
 
     private void CheckPatternForMatches(List<GameObject> matchedSlots, bool horizontal)

@@ -92,4 +92,3 @@ MonoBehaviour:
   raycastDistance: 19.3
   DownSlot: {fileID: 0}
   raycastOriginOffset: 60
-  raycastDistanceForPoolSlots: 200

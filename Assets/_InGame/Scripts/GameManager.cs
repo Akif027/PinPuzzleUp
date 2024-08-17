@@ -158,7 +158,7 @@ public class GameManager : MonoBehaviour
     #region MainGameLogic 
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (pattern.IsPoolFilledMoreThan10())
         {
             //  Debug.LogError("Win");
             pattern.CheckForMatches();
