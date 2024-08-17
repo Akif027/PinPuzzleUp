@@ -12,6 +12,8 @@ public class Slot : MonoBehaviour
     public GameObject DownSlot;
     // Offset the raycast origin slightly to avoid hitting self
     public float raycastOriginOffset = 0.1f;
+
+
     void GetDownEmptySlot()
     {
         // Create a ray that points downwards
@@ -52,16 +54,7 @@ public class Slot : MonoBehaviour
         }
     }
 
-    // For debugging, draw the ray in the scene view
-    void OnDrawGizmos()
-    {
-        // Offset the raycast origin slightly downward to avoid self-collision
-        Vector2 rayOrigin = (Vector2)transform.position + Vector2.down * raycastOriginOffset;
 
-        // Draw a red ray in the scene view
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(rayOrigin, rayOrigin + Vector2.down * raycastDistance);
-    }
 }
 public enum SlotType
 {

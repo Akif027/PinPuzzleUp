@@ -1,22 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Pattern : MonoBehaviour
 {
-    public GameObject slotPrefab;  // Assign your SlotPrefab here
+    public GameObject slotPrefab;
     public PatternType patternType;
     public Camera mainCamera;
-    public float spacing = 100f;   // Adjust this value according to your slot size and desired spacing
+    public float spacing = 100f;
 
     public GameObject pyramidAContainer;
     public GameObject VegasAContainer;
     public GameObject ArtAContainer;
 
     private List<GameObject> Slots = new List<GameObject>();
-    private Slot[,] slotGrid;  // 2D array to store the Slot references
+    private GameObject[,] slotGrid;
 
-    private int[,] patternPyramid = new int[,]
+    private readonly int[,] patternPyramid = new int[,]
     {
         { 1, 1, 0, 0, 0 },
         { 1, 1, 1, 0, 0 },
@@ -25,7 +24,7 @@ public class Pattern : MonoBehaviour
         { 0, 0, 0, 0, 1 }
     };
 
-    private int[,] patternVegas = new int[,]
+    private readonly int[,] patternVegas = new int[,]
     {
         { 0, 1, 1, 0, 0 },
         { 0, 1, 1, 1, 0 },
@@ -34,7 +33,7 @@ public class Pattern : MonoBehaviour
         { 0, 0, 1, 1, 0 }
     };
 
-    private int[,] patternArt = new int[,]
+    private readonly int[,] patternArt = new int[,]
     {
         { 1, 1, 1, 1, 1, 0, 0 },
         { 0, 0, 0, 1, 1, 1, 1 },
@@ -46,50 +45,44 @@ public class Pattern : MonoBehaviour
 
     private void Start()
     {
-        if (!mainCamera)
-            mainCamera = Camera.main;
+        mainCamera = mainCamera ?? Camera.main;
 
         switch (patternType)
         {
             case PatternType.Pyramid:
-                GeneratePattern(patternPyramid);
-                InitializeSlotGrid(patternPyramid.GetLength(0), patternPyramid.GetLength(1));
-                pyramidAContainer.SetActive(true);
+                ActivateContainerAndGeneratePattern(pyramidAContainer, patternPyramid);
                 break;
             case PatternType.Vegas:
-                GeneratePattern(patternVegas);
-                InitializeSlotGrid(patternVegas.GetLength(0), patternVegas.GetLength(1));
-                VegasAContainer.SetActive(true);
+                ActivateContainerAndGeneratePattern(VegasAContainer, patternVegas);
                 break;
             case PatternType.Art:
-                GeneratePattern(patternArt);
-                InitializeSlotGrid(patternArt.GetLength(0), patternArt.GetLength(1));
-                ArtAContainer.SetActive(true);
+                ActivateContainerAndGeneratePattern(ArtAContainer, patternArt);
                 break;
         }
     }
 
-    // Method to generate pattern without entering play mode
+    private void ActivateContainerAndGeneratePattern(GameObject container, int[,] pattern)
+    {
+        GeneratePattern(pattern);
+        container.SetActive(true);
+    }
+
     public void GeneratePatternInEditor()
     {
-        int[,] pattern = null;
-        switch (patternType)
+        int[,] pattern = patternType switch
         {
-            case PatternType.Pyramid:
-                pattern = patternPyramid;
-                break;
-            case PatternType.Vegas:
-                pattern = patternVegas;
-                break;
-            case PatternType.Art:
-                pattern = patternArt;
-                break;
-        }
+            PatternType.Pyramid => patternPyramid,
+            PatternType.Vegas => patternVegas,
+            PatternType.Art => patternArt,
+            _ => null
+        };
+
         if (pattern != null)
+        {
             GeneratePattern(pattern);
+        }
     }
 
-    // Method to destroy the existing pattern in the editor
     public void DestroyPatternInEditor()
     {
         // We create a copy of the child collection to avoid issues during iteration
@@ -109,99 +102,109 @@ public class Pattern : MonoBehaviour
         }
     }
 
-    void GeneratePattern(int[,] pattern)
+    private void GeneratePattern(int[,] pattern)
     {
-        float patternWidth = pattern.GetLength(1) * spacing;
-        float patternHeight = pattern.GetLength(0) * spacing;
+        int rows = pattern.GetLength(0);
+        int columns = pattern.GetLength(1);
 
-        // Calculate the offset to center the pattern
-        float xOffset = -patternWidth / 2 + spacing / 2;
-        float yOffset = patternHeight / 2 - spacing / 2;
-
-        // Destroy any existing children
+        slotGrid = new GameObject[rows, columns];
+        Slots.Clear();
         DestroyPatternInEditor();
 
-        for (int i = 0; i < pattern.GetLength(0); i++)
-        {
-            for (int j = 0; j < pattern.GetLength(1); j++)
-            {
-                if (pattern[i, j] == 1)  // Only instantiate if the pattern value is 1
-                {
-                    // Instantiate slot prefab and set as a child of the parent object
-                    GameObject slot = Instantiate(slotPrefab, transform);
-                    Slots.Add(slot);
-                    // Calculate and set the local position of the slot relative to the parent
-                    slot.transform.localPosition = new Vector3(j * spacing + xOffset, -i * spacing + yOffset, 0);
+        float xOffset = -(columns - 1) * spacing / 2;
+        float yOffset = (rows - 1) * spacing / 2;
 
-                    // Optionally set the name or tag for easier identification
-                    slot.name = $"Slot_{i}_{j}";
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                if (pattern[i, j] == 1)
+                {
+                    GameObject slotObject = Instantiate(slotPrefab, transform);
+                    slotObject.transform.localPosition = new Vector3(j * spacing + xOffset, -i * spacing + yOffset, 0);
+                    slotObject.name = $"Slot_{i}_{j}";
+
+                    GameObject slotComponent = slotObject.transform.GetChild(0)?.gameObject;
+                    if (slotComponent != null)
+                    {
+                        slotGrid[i, j] = slotComponent;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"SlotComponent is null at ({i},{j})");
+                    }
+
+                    Slots.Add(slotObject);
                 }
             }
         }
     }
 
-    public void CheckForMatchesAndDestroy()
+    public void CheckForMatches()
     {
-        for (int i = 0; i < slotGrid.GetLength(0); i++)
-        {
-            for (int j = 0; j < slotGrid.GetLength(1); j++)
-            {
-                if (slotGrid[i, j] != null)
-                {
-                    // Check for horizontal match
-                    if (i + 2 < slotGrid.GetLength(0) &&
-                        slotGrid[i + 1, j] != null &&
-                        slotGrid[i + 2, j] != null &&
-                        slotGrid[i, j].slotType == slotGrid[i + 1, j].slotType &&
-                        slotGrid[i + 1, j].slotType == slotGrid[i + 2, j].slotType)
-                    {
-                        DestroySlot(slotGrid[i, j].gameObject);
-                        DestroySlot(slotGrid[i + 1, j].gameObject);
-                        DestroySlot(slotGrid[i + 2, j].gameObject);
-                    }
+        List<GameObject> matchedSlots = new List<GameObject>();
 
-                    // Check for vertical match
-                    if (j + 2 < slotGrid.GetLength(1) &&
-                        slotGrid[i, j + 1] != null &&
-                        slotGrid[i, j + 2] != null &&
-                        slotGrid[i, j].slotType == slotGrid[i, j + 1].slotType &&
-                        slotGrid[i, j + 1].slotType == slotGrid[i, j + 2].slotType)
+        CheckPatternForMatches(matchedSlots, true);
+        CheckPatternForMatches(matchedSlots, false);
+
+        foreach (var slot in matchedSlots)
+        {
+            if (slot != null)
+            {
+                Destroy(slot);
+            }
+        }
+    }
+
+    private void CheckPatternForMatches(List<GameObject> matchedSlots, bool horizontal)
+    {
+        int rows = slotGrid.GetLength(0);
+        int columns = slotGrid.GetLength(1);
+
+        int maxI = horizontal ? rows : rows - 2;
+        int maxJ = horizontal ? columns - 2 : columns;
+
+        for (int i = 0; i < maxI; i++)
+        {
+            for (int j = 0; j < maxJ; j++)
+            {
+                GameObject slot1 = horizontal ? slotGrid[i, j] : slotGrid[i, j];
+                GameObject slot2 = horizontal ? slotGrid[i, j + 1] : slotGrid[i + 1, j];
+                GameObject slot3 = horizontal ? slotGrid[i, j + 2] : slotGrid[i + 2, j];
+
+                if (slot1 != null && slot2 != null && slot3 != null)
+                {
+                    Slot slotComp1 = slot1.GetComponentInChildren<Slot>();
+                    Slot slotComp2 = slot2.GetComponentInChildren<Slot>();
+                    Slot slotComp3 = slot3.GetComponentInChildren<Slot>();
+
+                    if (slotComp1 != null && slotComp2 != null && slotComp3 != null &&
+                        slotComp1.slotType == slotComp2.slotType && slotComp2.slotType == slotComp3.slotType)
                     {
-                        DestroySlot(slotGrid[i, j].gameObject);
-                        DestroySlot(slotGrid[i, j + 1].gameObject);
-                        DestroySlot(slotGrid[i, j + 2].gameObject);
+                        matchedSlots.Add(slotComp1.gameObject);
+                        matchedSlots.Add(slotComp2.gameObject);
+                        matchedSlots.Add(slotComp3.gameObject);
                     }
                 }
             }
         }
     }
 
-    private void DestroySlot(GameObject slot)
-    {
-        Slots.Remove(slot);
-        Destroy(slot);
-    }
+    public List<GameObject> GetAllSlots() => Slots;
 
-    public List<GameObject> GetAllSlots()
-    {
-        return Slots;
-    }
-
-    public bool isPoolFilledMoreThan10()
+    public bool IsPoolFilledMoreThan10()
     {
         int filledSlotsCount = 0;
 
-        foreach (var gameObject in GetAllSlots())
+        foreach (var slotObject in Slots)
         {
-            foreach (Transform child in gameObject.transform)
+            foreach (Transform child in slotObject.transform)
             {
-                Slot slot = child.GetComponentInChildren<Slot>();
-                if (slot != null)
+                if (child.GetComponentInChildren<Slot>() != null)
                 {
                     filledSlotsCount++;
                     if (filledSlotsCount >= 10)
                     {
-                        //CheckForMatchesAndDestroy(); // Trigger match check
                         return true;
                     }
                 }
@@ -211,36 +214,6 @@ public class Pattern : MonoBehaviour
         return false;
     }
 
-    void InitializeSlotGrid(int rows, int cols)
-    {
-        slotGrid = new Slot[rows, cols];
-
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                GameObject slotObject = GetSlotObjectAt(i, j); // Replace with your method to get the slot object at (i, j)
-                if (slotObject != null)
-                {
-                    slotGrid[i, j] = slotObject.GetComponent<Slot>();
-                }
-            }
-        }
-    }
-
-    GameObject GetSlotObjectAt(int row, int col)
-    {
-        foreach (var slot in Slots)
-        {
-            string expectedName = $"Slot_{row}_{col}";
-            if (slot.name == expectedName)
-            {
-                return slot;
-            }
-        }
-        return null;
-    }
-
     public enum PatternType
     {
         Pyramid,
@@ -248,7 +221,7 @@ public class Pattern : MonoBehaviour
         Art
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         Slots.Clear();
     }

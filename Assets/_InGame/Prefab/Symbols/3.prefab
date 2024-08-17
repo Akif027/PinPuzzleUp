@@ -89,6 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotType: 0
-  raycastDistance: 5
+  raycastDistance: 19.3
   DownSlot: {fileID: 0}
-  raycastOriginOffset: 0.1
+  raycastOriginOffset: 60
+  raycastDistanceForPoolSlots: 200

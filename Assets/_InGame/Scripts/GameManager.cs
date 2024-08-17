@@ -70,19 +70,14 @@ public class GameManager : MonoBehaviour
 
     private bool DoesSlotExistInHierarchy(Transform parent)
     {
-        // Check recursively if any child of this parent contains a Slot component
-        foreach (Transform child in parent)
+        // Directly search for the Slot component in all children
+        Slot existingSlot = parent.GetComponentInChildren<Slot>();
+        if (existingSlot != null)
         {
-            if (child.GetComponent<Slot>() != null)
-            {
-                return true; // Slot found
-            }
-            else if (DoesSlotExistInHierarchy(child)) // Recursive call
-            {
-                return true; // Slot found in deeper levels
-            }
+            Debug.Log($"Slot found in {existingSlot.gameObject.name} under {parent.name}");
+            return true;
         }
-        return false; // No Slot found in this hierarchy
+        return false;
     }
     public void ResetProcessedSlots()
     {
@@ -149,24 +144,26 @@ public class GameManager : MonoBehaviour
             }
         }
 
-
+        ResetProcessedSlots();
         //  UpdateBottomFieldSlots(ImageSymbolContainer);
     }
 
     public void ClearList()
     {
         PoolSlots.Clear();
-        ResetProcessedSlots();
+        processedObjects.Clear();
         // processedObjects.Clear();
     }
 
     #region MainGameLogic 
     void Update()
     {
-        if (pattern.isPoolFilledMoreThan10())
+        if (Input.GetMouseButtonDown(1))
         {
-            Debug.LogError("Win");
+            //  Debug.LogError("Win");
+            pattern.CheckForMatches();
         }
+
     }
     #endregion
 }

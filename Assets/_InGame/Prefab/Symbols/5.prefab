@@ -88,7 +88,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6634e65de166ec64cace5e1eba1cda09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotType: 0
-  raycastDistance: 5
+  slotType: 1
+  raycastDistance: 19.3
   DownSlot: {fileID: 0}
-  raycastOriginOffset: 0.1
+  raycastOriginOffset: 60
+  raycastDistanceForPoolSlots: 200
