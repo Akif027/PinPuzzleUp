@@ -1,24 +1,21 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     public GameData gameData;
     public GameObject ImageSymbolContainer;
-    public List<Sprite> symbolContainer = new List<Sprite>();
     public IReadOnlyCollection<GameObject> ProcessedObjects => processedObjects;
     public List<GameObject> PoolSlots = new List<GameObject>();
-    private HashSet<GameObject> processedObjects = new HashSet<GameObject>();
+    public List<GameObject> processedObjects = new List<GameObject>();
 
     [SerializeField] Pattern pattern;
 
-
     private void Awake()
     {
-        // Singleton pattern to ensure one instance of GameManager
         if (Instance == null)
         {
             Instance = this;
@@ -27,150 +24,149 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        // Optionally make this GameObject persistent
-        // DontDestroyOnLoad(gameObject);
     }
+
     private void OnEnable()
     {
-        EventManager.OnButtonClickSymbol += AddChildSprite;
-        EventManager.OnPopulateSlots += UpdateAllSlots;
+        EventManager.OnButtonClickSymbol += AddChildSlot;
+        EventManager.OnPopulateSlots += UpdateSelectedPoolSlots;
     }
 
-    private void Start() => ChangeChildImages(ImageSymbolContainer);
+    private void Start() => UpdateBottomFieldSlots(ImageSymbolContainer);
 
     private void OnDisable()
     {
-        EventManager.OnButtonClickSymbol -= AddChildSprite;
-        EventManager.OnPopulateSlots -= UpdateAllSlots;
-        symbolContainer.Clear();
+        EventManager.OnButtonClickSymbol -= AddChildSlot;
+        EventManager.OnPopulateSlots -= UpdateSelectedPoolSlots;
         processedObjects.Clear();
     }
 
-    public void ChangeChildImages(GameObject parentContainer)
+    public void UpdateBottomFieldSlots(GameObject parentContainer)
     {
-        if (!parentContainer || !gameData.sprites.Any()) return;
+        if (!parentContainer || !gameData.SlotsList.Any()) return;
 
         var random = new System.Random();
 
-        // Iterate through all Image components in the hierarchy
-        foreach (var img in parentContainer.GetComponentsInChildren<Image>(true))
+        // Iterate through all children recursively
+        foreach (Transform child in parentContainer.GetComponentsInChildren<Transform>(true))
         {
-            // Skip the direct children of the parentContainer
-            if (img.transform.parent == parentContainer.transform) continue;
-
-            // Check if the sprite is null and there are available sprites
-            if (img.sprite == null && gameData.sprites.Any())
+            // Check if the current child is the one where we want to place a slot
+            if (child.name == "SymbolPos")
             {
-                // Assign a new sprite from the available list
-                img.sprite = gameData.sprites[random.Next(gameData.sprites.Count)];
-            }
-        }
-    }
-    public void ResetProcessedImages()
-    {
-        foreach (var processedObject in processedObjects)
-        {
-            foreach (Transform child in processedObject.transform)
-            {
-                var imgComponent = child.GetComponent<Image>();
-                if (imgComponent != null)
+                // Check if any Slot object already exists in the entire hierarchy under this child
+                if (!DoesSlotExistInHierarchy(child))
                 {
-                    imgComponent.sprite = null;
+                    // Instantiate a random Slot from the SlotsList if no Slot exists
+                    var randomSlotPrefab = gameData.SlotsList[random.Next(gameData.SlotsList.Count)];
+                    var slotInstance = Instantiate(randomSlotPrefab, child);
+
+                    slotInstance.transform.localPosition = Vector3.zero;
+                    slotInstance.transform.localRotation = Quaternion.identity;
+                    slotInstance.transform.localScale = Vector3.one;
                 }
             }
         }
     }
-    public void AddChildSprite(GameObject childObject)
+
+    private bool DoesSlotExistInHierarchy(Transform parent)
+    {
+        // Check recursively if any child of this parent contains a Slot component
+        foreach (Transform child in parent)
+        {
+            if (child.GetComponent<Slot>() != null)
+            {
+                return true; // Slot found
+            }
+            else if (DoesSlotExistInHierarchy(child)) // Recursive call
+            {
+                return true; // Slot found in deeper levels
+            }
+        }
+        return false; // No Slot found in this hierarchy
+    }
+    public void ResetProcessedSlots()
+    {
+        foreach (var processedObject in processedObjects)
+        {
+            if (processedObject != null)
+            {
+                Debug.Log($"Destroying: {processedObject.name}");
+                Destroy(processedObject);
+            }
+        }
+
+        processedObjects.Clear();
+
+        // Add a small delay before rechecking
+        StartCoroutine(DelayedSlotCheck());
+    }
+
+    private IEnumerator DelayedSlotCheck()
+    {
+        yield return new WaitForEndOfFrame(); // Wait for one frame to ensure destruction is complete
+        UpdateBottomFieldSlots(ImageSymbolContainer);
+    }
+    public void AddChildSlot(GameObject childObject)
     {
         Debug.Log($"Searching in: {childObject.name}");
 
         if (processedObjects.Contains(childObject))
             return;
 
-        foreach (Transform child in childObject.transform)
+
+        if (childObject != null)
         {
-            var img = child.GetComponent<Image>();
-            if (img?.sprite != null)
-            {
-                symbolContainer.Add(img.sprite);
-                Debug.Log($"Added sprite from child: {img.sprite.name}");
-            }
-            else
-            {
-                Debug.Log($"No Image component found in child: {child.gameObject.name}");
-            }
+
+            processedObjects.Add(childObject);
+
+        }
+        else
+        {
+            Debug.Log($"No Slot component found in child: {childObject.gameObject.name}");
         }
 
-        processedObjects.Add(childObject);
     }
 
-    private void UpdateAllSlots(List<GameObject> slots)
+    private void UpdateSelectedPoolSlots(List<GameObject> slots) //its getting called after we click on the arrow button
     {
         PoolSlots = slots;
-        Debug.Log($"{PoolSlots.Count} pool {symbolContainer.Count}");
 
-        if (symbolContainer.Count == 0 || symbolContainer.Count != PoolSlots.Count)
+        if (processedObjects.Count == 0 || processedObjects.Count != PoolSlots.Count)
             return;
 
-        var symbolList = symbolContainer.ToList();
-
-        for (int i = 0; i < symbolList.Count; i++)
+        for (int i = 0; i < PoolSlots.Count; i++)
         {
             foreach (Transform child in PoolSlots[i].transform)
             {
-                //  child.gameObject.SetActive(true);
-                var img = child.GetComponent<Image>();
-
-                if (img != null)
+                if (child.GetComponent<Slot>() == null)
                 {
-                    img.sprite = symbolList[i];
-
-                    break;
+                    // Instantiate a Slot if none exists
+                    var slotInstance = Instantiate(processedObjects[i], child);
+                    slotInstance.transform.localPosition = Vector3.zero;
+                    slotInstance.transform.localRotation = Quaternion.identity;
+                    slotInstance.transform.localScale = Vector3.one;
                 }
             }
-            ResetProcessedImages();
-            ChangeChildImages(ImageSymbolContainer);
-
         }
 
 
+        //  UpdateBottomFieldSlots(ImageSymbolContainer);
     }
 
     public void ClearList()
     {
         PoolSlots.Clear();
-        symbolContainer.Clear();
-        processedObjects.Clear();
-
+        ResetProcessedSlots();
+        // processedObjects.Clear();
     }
 
-
-    #region  ManinGameLogic 
+    #region MainGameLogic 
     void Update()
     {
-        // CheckForEmptySlot();
-
-    }
-    public void CheckForEmptySlot()
-    {
-        if (pattern.GetAllSlots() == null) return;
-
-
-        foreach (var gameObject in pattern.GetAllSlots())
+        if (pattern.isPoolFilledMoreThan10())
         {
-            foreach (Transform child in gameObject.transform)
-            {
-                var img = child.GetComponent<Image>();
-                if (img != null && img.sprite == null)
-                {
-                    Debug.LogWarning($"Child {child.name} of {gameObject.name} has an Image component with a null sprite.");
-                }
-            }
+            Debug.LogError("Win");
         }
-
-
     }
-
     #endregion
 }

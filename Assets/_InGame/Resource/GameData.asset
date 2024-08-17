@@ -12,16 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91a6967844c8c4846bdcd8b76df25b11, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 21300000, guid: ceb7e5a0251fd314b8b4bc813b9aa0ed, type: 3}
-  - {fileID: 21300000, guid: 44a207c3a25dd9a4082a1183c70a6632, type: 3}
-  - {fileID: 21300000, guid: 91b3718d663d50b42806fea073ebb147, type: 3}
-  - {fileID: 21300000, guid: c4fa13eb840647648893f0acae3911d4, type: 3}
-  - {fileID: 21300000, guid: 10ca0242088490349b2d31c7e936d374, type: 3}
-  - {fileID: 21300000, guid: 92c4f3d8eaee8c54db73c988c1e0f19a, type: 3}
-  - {fileID: 21300000, guid: 7a81f84ac9d15084194923483e6e99ac, type: 3}
-  - {fileID: 21300000, guid: ecffaeb02ad56e949979517daf52dc21, type: 3}
-  - {fileID: 21300000, guid: f4963e86a2ed0f343a5c4842debdde59, type: 3}
-  - {fileID: 21300000, guid: 78b9a20fa38ad694fbfa715b37215c66, type: 3}
-  - {fileID: 21300000, guid: fc8aca6c103ee2e42b2121a74d8ef1c9, type: 3}
-  - {fileID: 21300000, guid: a3308f86539ae2a4782ac105a118d6aa, type: 3}
+  SlotsList:
+  - {fileID: -5886178727858426611, guid: bfb02ad7e6abe8048832aec32f1943b8, type: 3}
+  - {fileID: -2187692947382446738, guid: 20271ada42ec5b6498bd23a9009dfb0c, type: 3}
+  - {fileID: -819197634215814595, guid: 03de13bc6a47fd147bd87c3e4fe3d30b, type: 3}
+  - {fileID: 8221334008273812008, guid: a4f337b1dfd987a4784697a764903ad4, type: 3}
+  - {fileID: 1446744608862373349, guid: ba025b5b112a89249aa6029dfcf9032b, type: 3}
+  - {fileID: 6129974225745357345, guid: c8974ec1cfcbfa94fb67b41b6a8e587e, type: 3}
+  - {fileID: 3821725870159819342, guid: 83966e65383125442afa3eae051ba5af, type: 3}
+  - {fileID: 3701158097726260979, guid: ff2025b5bb03dea488160b703a377732, type: 3}

@@ -7,11 +7,10 @@ public class SymbolPicker : MonoBehaviour
 
     Button button;
 
-    Image childImage;
+    [SerializeField] Slot child;
     void Start()
     {
         button = GetComponent<Button>();
-        childImage = GetComponentInChildren<Image>();
         if (button != null)
         {
             button.onClick.AddListener(HandleClick);
@@ -20,10 +19,10 @@ public class SymbolPicker : MonoBehaviour
 
     public void HandleClick()
     {
-
-        if (childImage != null)
+        child = GetComponentInChildren<Slot>();
+        if (child != null)
         {
-            EventManager.ButtonClickedSymbol(childImage.gameObject);
+            EventManager.ButtonClickedSymbol(child.gameObject);
         }
     }
 }
