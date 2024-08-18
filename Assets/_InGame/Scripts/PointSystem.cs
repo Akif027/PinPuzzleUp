@@ -7,38 +7,36 @@ public class PointSystem : MonoBehaviour
 {
     private int totalPoints = 0;
     public TMP_Text scoreText;  // Reference to the UI Text component for the score
+    public TMP_Text ScoretextGameFinished; // Reference to the UI Text component for the final score
 
-    public TMP_Text ScoretextGameFinised;
-    // Points for different combinations
-    private Dictionary<int, int> pointsTable = new Dictionary<int, int>
+    private readonly Dictionary<int, int> pointsTable = new Dictionary<int, int>
     {
-        { 3, 10 },
-        { 4, 20 },
-        { 5, 40 },
-        { 6, 80 },
-        { 7, 200 },
-        { 8, 450 },
-        { 9, 700 },
-        { 10, 1000 }
+        { 3, 10 }, { 4, 20 }, { 5, 40 }, { 6, 80 },
+        { 7, 200 }, { 8, 450 }, { 9, 700 }, { 10, 1000 }
     };
 
-    private Dictionary<int, int> redPointsTable = new Dictionary<int, int>
+    private readonly Dictionary<int, int> redPointsTable = new Dictionary<int, int>
     {
-        { 7, 500 },
-        { 8, 750 },
-        { 9, 1000 },
-        { 10, 1500 }
+        { 7, 500 }, { 8, 750 }, { 9, 1000 }, { 10, 1500 }
     };
 
-    // This method is called when combinations are destroyed
     public void CalculatePoints(List<GameObject> matchedSlots)
     {
+        // Use a HashSet to track which slots have already been counted
+        HashSet<GameObject> countedSlots = new HashSet<GameObject>();
+
         // Dictionary to store the count of each symbol type
         Dictionary<SlotType, int> symbolCount = new Dictionary<SlotType, int>();
 
         // Count occurrences of each symbol in the matched slots
         foreach (var slot in matchedSlots)
         {
+            // Check if this slot has already been counted
+            if (countedSlots.Contains(slot))
+            {
+                continue;
+            }
+
             Slot slotComponent = slot.GetComponent<Slot>();
             if (slotComponent != null)
             {
@@ -52,6 +50,9 @@ public class PointSystem : MonoBehaviour
                 {
                     symbolCount[slotType] = 1;
                 }
+
+                // Mark this slot as counted
+                countedSlots.Add(slot);
             }
         }
 
@@ -61,26 +62,18 @@ public class PointSystem : MonoBehaviour
             int count = entry.Value;
             if (entry.Key == SlotType.Red)
             {
-                if (redPointsTable.ContainsKey(count))
+                if (redPointsTable.TryGetValue(count, out int points))
                 {
-                    Debug.Log("Red Symbol Count: " + count + ", Points: " + redPointsTable[count]);
-                    totalPoints += redPointsTable[count];
-                }
-                else
-                {
-                    Debug.LogWarning("No points found for Red Symbol Count: " + count);
+                    totalPoints += points;
+                    Debug.Log($"Red Symbol Count: {count}, Points: {points}");
                 }
             }
             else
             {
-                if (pointsTable.ContainsKey(count))
+                if (pointsTable.TryGetValue(count, out int points))
                 {
-                    Debug.Log("Symbol Count: " + count + ", Points: " + pointsTable[count]);
-                    totalPoints += pointsTable[count];
-                }
-                else
-                {
-                    Debug.LogWarning("No points found for Symbol Count: " + count);
+                    totalPoints += points;
+                    Debug.Log($"Symbol Count: {count}, Points: {points}");
                 }
             }
         }
@@ -88,28 +81,32 @@ public class PointSystem : MonoBehaviour
         Debug.Log("Total Points: " + totalPoints);
         UpdateScoreText();
     }
+
+
     private void UpdateScoreText()
     {
         if (scoreText != null)
         {
             scoreText.text = totalPoints.ToString();
-            ScoretextGameFinised.text = totalPoints.ToString();
         }
-        else
+        if (ScoretextGameFinished != null)
         {
-            Debug.LogWarning("Score Text UI is not assigned.");
+            ScoretextGameFinished.text = totalPoints.ToString();
         }
     }
 
-    // Method to reset points (if needed)
     public void ResetPoints()
     {
         totalPoints = 0;
     }
 
-    // Getter to retrieve the current points
     public int GetTotalPoints()
     {
         return totalPoints;
+    }
+
+    void OnDisable()
+    {
+
     }
 }

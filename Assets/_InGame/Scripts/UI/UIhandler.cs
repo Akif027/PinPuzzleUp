@@ -7,7 +7,6 @@ public class UIhandler : MonoBehaviour
 {
     [SerializeField] TMP_Text TitleName;
     [SerializeField] GameObject Game_ExitUIPanel;
-
     [SerializeField] GameObject Game_FinishedUIPanel;
 
     public static UIhandler Instance { get; private set; }
@@ -32,10 +31,10 @@ public class UIhandler : MonoBehaviour
 
 
     }
-    public GameObject EndGame()
+    public void EndGame()
     {
 
-        return Game_FinishedUIPanel;
+        Game_FinishedUIPanel.SetActive(true);
     }
     public void LoadTheScene(string S)
     {

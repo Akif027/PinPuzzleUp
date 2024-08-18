@@ -6,8 +6,9 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
     public GameData gameData;
-    public GameObject ImageSymbolContainer;
+    [Header("ChooseFiedl/Canvas")] public GameObject ImageSymbolContainer;
     public IReadOnlyCollection<GameObject> ProcessedObjects => processedObjects;
     public List<GameObject> PoolSlots = new List<GameObject>();
     public List<GameObject> processedObjects = new List<GameObject>();
@@ -160,7 +161,7 @@ public class GameManager : MonoBehaviour
 
         get
         {
-            return pattern.patternType; // Corrected to return pattern.patternType directly
+            return pattern.patternType;
         }
 
     }
@@ -170,7 +171,7 @@ public class GameManager : MonoBehaviour
         if (pattern.IsPoolFilledMoreThan10())
         {
 
-            pattern.CheckForMatches();
+            // pattern.CheckForMatches();
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -180,3 +181,4 @@ public class GameManager : MonoBehaviour
     }
 
 }
+

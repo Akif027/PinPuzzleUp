@@ -8,7 +8,6 @@ public class Pattern : MonoBehaviour
     public PatternType patternType;
     public Camera mainCamera;
     public float spacing = 100f;
-
     public GameObject pyramidAContainer;
     public GameObject VegasAContainer;
     public GameObject ArtAContainer;
@@ -147,6 +146,13 @@ public class Pattern : MonoBehaviour
 
         CheckPatternForMatches(matchedSlots, true);
         CheckPatternForMatches(matchedSlots, false);
+        if (matchedSlots.Count == 0 && IsPoolFilledMoreThan10()) // when the game Finished
+        {
+            IPlayerPrefs.SaveScore(pointSystem.GetTotalPoints());
+            UIhandler.Instance.EndGame();  // No matches found and the pool is filled
+            return;
+        }
+
 
         // Calculate points before destroying the slots
 
@@ -161,6 +167,7 @@ public class Pattern : MonoBehaviour
         {
             if (slot != null)
             {
+                Debug.LogError("slot: " + slot.name);
                 Destroy(slot);
             }
         }
