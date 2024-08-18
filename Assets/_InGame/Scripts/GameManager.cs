@@ -155,15 +155,28 @@ public class GameManager : MonoBehaviour
         // processedObjects.Clear();
     }
 
-    #region MainGameLogic 
+    public Pattern.PatternType GetpatternType
+    {
+
+        get
+        {
+            return pattern.patternType; // Corrected to return pattern.patternType directly
+        }
+
+    }
+
     void Update()
     {
         if (pattern.IsPoolFilledMoreThan10())
         {
-            //  Debug.LogError("Win");
+
             pattern.CheckForMatches();
         }
+        if (Input.GetMouseButtonDown(1))
+        {
 
+            pattern.CheckForMatches();
+        }
     }
-    #endregion
+
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements.Experimental;
 
 public class Pattern : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class Pattern : MonoBehaviour
     public GameObject pyramidAContainer;
     public GameObject VegasAContainer;
     public GameObject ArtAContainer;
-
+    public PointSystem pointSystem;
     private List<GameObject> Slots = new List<GameObject>();
     private GameObject[,] slotGrid;
 
@@ -148,11 +149,12 @@ public class Pattern : MonoBehaviour
         CheckPatternForMatches(matchedSlots, false);
 
         // Calculate points before destroying the slots
-        PointSystem pointSystem = GetComponent<PointSystem>();
+
         if (pointSystem != null)
         {
             pointSystem.CalculatePoints(matchedSlots);
         }
+
 
         // Now destroy the matched slots
         foreach (var slot in matchedSlots)
@@ -199,7 +201,6 @@ public class Pattern : MonoBehaviour
         }
     }
 
-    public List<GameObject> GetAllSlots() => Slots;
 
     public bool IsPoolFilledMoreThan10()
     {

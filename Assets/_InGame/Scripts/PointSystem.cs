@@ -7,6 +7,8 @@ public class PointSystem : MonoBehaviour
 {
     private int totalPoints = 0;
     public TMP_Text scoreText;  // Reference to the UI Text component for the score
+
+    public TMP_Text ScoretextGameFinised;
     // Points for different combinations
     private Dictionary<int, int> pointsTable = new Dictionary<int, int>
     {
@@ -90,7 +92,8 @@ public class PointSystem : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = "Score: " + totalPoints.ToString();
+            scoreText.text = totalPoints.ToString();
+            ScoretextGameFinised.text = totalPoints.ToString();
         }
         else
         {
