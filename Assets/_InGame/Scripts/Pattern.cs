@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
@@ -125,9 +126,11 @@ public class Pattern : MonoBehaviour
                     slotObject.name = $"Slot_{i}_{j}";
 
                     GameObject slotComponent = slotObject.transform.GetChild(0)?.gameObject;
+
                     if (slotComponent != null)
                     {
                         slotGrid[i, j] = slotComponent;
+
                     }
                     else
                     {
@@ -139,6 +142,36 @@ public class Pattern : MonoBehaviour
             }
         }
     }
+    public void DebugSlotGrid()
+    {
+        int rows = slotGrid.GetLength(0);
+        int columns = slotGrid.GetLength(1);
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                GameObject slotComponent = slotGrid[i, j];
+                if (slotComponent != null)
+                {
+                    // Assuming Slot component has a property like 'slotType' or similar to identify it
+                    Slot slotComp = slotComponent.GetComponentInChildren<Slot>();
+                    if (slotComp != null)
+                    {
+                        Debug.LogError($"Slot at ({i},{j}) is filled with type: {slotComp.slotType}");
+                    }
+                    else
+                    {
+                        Debug.LogError($"Slot at ({i},{j}) is empty.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Slot at ({i},{j}) is null.");
+                }
+            }
+        }
+    }
 
     public void CheckForMatches()
     {
@@ -146,34 +179,47 @@ public class Pattern : MonoBehaviour
 
         CheckPatternForMatches(matchedSlots, true);
         CheckPatternForMatches(matchedSlots, false);
-        if (matchedSlots.Count == 0 && IsPoolFilledMoreThan10()) // when the game Finished
+
+        if (matchedSlots.Count == 0 && IsPoolFilledMoreThan10()) // when the game is finished
         {
             IPlayerPrefs.SaveScore(pointSystem.GetTotalPoints());
             UIhandler.Instance.EndGame();  // No matches found and the pool is filled
             return;
         }
 
-
         // Calculate points before destroying the slots
-
         if (pointSystem != null)
         {
             pointSystem.CalculatePoints(matchedSlots);
         }
-
 
         // Now destroy the matched slots
         foreach (var slot in matchedSlots)
         {
             if (slot != null)
             {
-                Debug.LogError("slot: " + slot.name);
                 Destroy(slot);
             }
         }
 
+        StartCoroutine(DestroySlotsAndShift(matchedSlots));
     }
+    private IEnumerator DestroySlotsAndShift(List<GameObject> matchedSlots)
+    {
+        foreach (var slot in matchedSlots)
+        {
+            if (slot != null)
+            {
+                Destroy(slot);
+            }
+        }
 
+        // Wait for the end of the frame to ensure all slots are destroyed
+        yield return new WaitForEndOfFrame();
+
+        // Shift remaining symbols to the left
+        ShiftSymbolsToLeft();
+    }
     private void CheckPatternForMatches(List<GameObject> matchedSlots, bool horizontal)
     {
         int rows = slotGrid.GetLength(0);
@@ -202,6 +248,47 @@ public class Pattern : MonoBehaviour
                         matchedSlots.Add(slotComp1.gameObject);
                         matchedSlots.Add(slotComp2.gameObject);
                         matchedSlots.Add(slotComp3.gameObject);
+                    }
+                }
+            }
+        }
+    }
+
+    public void ShiftSymbolsToLeft()
+    {
+        int rows = slotGrid.GetLength(0);
+        int columns = slotGrid.GetLength(1);
+
+        for (int i = 0; i < rows; i++)
+        {
+            int emptyIndex = -1;
+            for (int j = 0; j < columns; j++)
+            {
+                if (slotGrid[i, j] != null)
+                {
+                    Transform slotTransform = slotGrid[i, j].transform;
+                    if (slotTransform.childCount > 0) // Check if the slot has any children
+                    {
+                        if (emptyIndex != -1) // Only proceed if an empty slot has been found
+                        {
+                            GameObject symbol = slotTransform.GetChild(0).gameObject;
+                            symbol.transform.SetParent(slotGrid[i, emptyIndex].transform);
+                            symbol.transform.SetPositionAndRotation(
+                                slotGrid[i, emptyIndex].transform.position,
+                                slotGrid[i, emptyIndex].transform.rotation
+                            );
+
+                            // Update the grid reference
+                            slotGrid[i, emptyIndex] = slotGrid[i, j];
+                            slotGrid[i, j] = null;
+
+                            // Move the emptyIndex to the next empty position
+                            emptyIndex++;
+                        }
+                    }
+                    else if (emptyIndex == -1)
+                    {
+                        emptyIndex = j; // Found the first empty slot
                     }
                 }
             }

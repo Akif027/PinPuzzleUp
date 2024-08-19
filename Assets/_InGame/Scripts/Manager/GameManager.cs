@@ -171,13 +171,21 @@ public class GameManager : MonoBehaviour
         if (pattern.IsPoolFilledMoreThan10())
         {
 
-            // pattern.CheckForMatches();
+            pattern.CheckForMatches();
         }
         if (Input.GetMouseButtonDown(1))
         {
 
             pattern.CheckForMatches();
+
         }
+        if (Input.GetKey(KeyCode.L))
+        {
+
+            pattern.ShiftSymbolsToLeft();
+
+        }
+
     }
 
 }

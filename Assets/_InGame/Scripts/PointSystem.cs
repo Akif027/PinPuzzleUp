@@ -105,8 +105,5 @@ public class PointSystem : MonoBehaviour
         return totalPoints;
     }
 
-    void OnDisable()
-    {
 
-    }
 }

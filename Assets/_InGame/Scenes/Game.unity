@@ -1853,7 +1853,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 18.750366, y: 72.323746}
+  m_AnchoredPosition: {x: 18.750488, y: 72.323746}
   m_SizeDelta: {x: -337.5104, y: 1433.9696}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &522704272
@@ -1869,7 +1869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotPrefab: {fileID: 595386332623090296, guid: 5bbe463ee3d005d469eab03bcca823da, type: 3}
-  patternType: 1
+  patternType: 0
   mainCamera: {fileID: 963194227}
   spacing: 205
   pyramidAContainer: {fileID: 1794946378}
@@ -2584,7 +2584,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 18.750374, y: 72.323746}
+  m_AnchoredPosition: {x: 18.750488, y: 72.32373}
   m_SizeDelta: {x: -337.51038, y: -1979.3636}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &877498316
