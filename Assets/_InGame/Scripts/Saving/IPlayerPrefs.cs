@@ -117,5 +117,19 @@ public static class IPlayerPrefs
     {
         return $"{ArtScoreKeyFormat}{index}";
     }
+
+
+    public static PatternType GetMode()
+    {
+        PatternType type = (PatternType)PlayerPrefs.GetInt("Mode");
+        return type;
+    }
+
+    public static void SetMode(int ModeNum)
+    {
+
+        PlayerPrefs.SetInt("Mode", ModeNum);
+
+    }
 }
 

@@ -10,12 +10,3 @@ public class Slot : MonoBehaviour
     public float raycastDistance = 5f;
 
 }
-public enum SlotType
-{
-    Red,
-    Blue,
-    Green,
-    Yellow,
-    Purple
-    // Add other types as needed
-}

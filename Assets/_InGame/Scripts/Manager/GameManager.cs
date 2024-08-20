@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
         // processedObjects.Clear();
     }
 
-    public Pattern.PatternType GetpatternType
+    public PatternType GetpatternType
     {
 
         get

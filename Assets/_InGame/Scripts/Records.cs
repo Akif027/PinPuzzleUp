@@ -9,7 +9,7 @@ public class Records : MonoBehaviour
     public Button PyramidB;
     public Button VegasB;
     public Button ArtB;
-    public List<int> scores = new List<int>();
+    private List<int> scores = new List<int>();
 
     private const int maxScores = 5;
 
@@ -123,6 +123,8 @@ public class Records : MonoBehaviour
             }
         }
     }
+
+
     // private string GetSPyramidcoreKey(int index)
     // {
     //     return $"PyramidScore_{index}";

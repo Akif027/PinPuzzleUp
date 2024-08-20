@@ -45,6 +45,12 @@ public class Pattern : MonoBehaviour
         { 0, 0, 0, 0, 0, 1, 0 }
     };
 
+
+    private void Awake()
+    {
+        patternType = IPlayerPrefs.GetMode();
+
+    }
     private void Start()
     {
         mainCamera = mainCamera ?? Camera.main;
@@ -122,11 +128,12 @@ public class Pattern : MonoBehaviour
             {
                 if (pattern[i, j] == 1)
                 {
+
                     GameObject slotObject = Instantiate(slotPrefab, transform);
                     slotObject.transform.localPosition = new Vector3(j * spacing + xOffset, -i * spacing + yOffset, 0);
                     slotObject.name = $"Slot_{i}_{j}";
-
                     GameObject slotComponent = slotObject.transform.GetChild(0)?.gameObject;
+
 
                     if (slotComponent != null)
                     {
@@ -417,12 +424,6 @@ public class Pattern : MonoBehaviour
         return false;
     }
 
-    public enum PatternType
-    {
-        Pyramid,
-        Vegas,
-        Art
-    }
 
     private void OnDisable()
     {

@@ -23,4 +23,13 @@ public class MenuManager : MonoBehaviour
         CustomSceneManager.LoadSceneAsync(S);
 
     }
+
+
+    void OnDisable()
+    {
+        PlayB.onClick.RemoveListener(() => LoadTheScene("Mode"));
+        RulesB.onClick.RemoveListener(() => LoadTheScene("Rules"));
+        RecordB.onClick.RemoveListener(() => LoadTheScene("Records"));
+
+    }
 }

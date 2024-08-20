@@ -12,7 +12,7 @@ public class ArrowHandler : MonoBehaviour
    private Button arrowButton;
    private List<GameObject> emptySlots = new List<GameObject>();
 
-   public List<GameObject> tmpslot = new List<GameObject>();
+   public List<GameObject> SlotContainer = new List<GameObject>();
 
    void Start()
    {
@@ -27,7 +27,7 @@ public class ArrowHandler : MonoBehaviour
    void Update()
    {
       bool hasEmptySlots = false;
-      foreach (var item in tmpslot)
+      foreach (var item in SlotContainer)
       {
          if (IsSlotEmpty(item))
          {
@@ -54,16 +54,16 @@ public class ArrowHandler : MonoBehaviour
 
    private List<GameObject> GetEmptySlotsInDirection()
    {
-      var rayDirection = -transform.up;
+      var rayDirection = transform.right;
       RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, rayDirection, rayLength, slotLayerMask);
       Debug.DrawRay(transform.position, rayDirection * rayLength, Color.red, 2f);
 
-      tmpslot.Clear(); // Clear tmpslot before adding new slots
+      SlotContainer.Clear(); // Clear SlotContainer before adding new slots
 
       foreach (var hit in hits)
       {
          var slot = hit.collider.gameObject;
-         tmpslot.Add(slot); // Add slot to tmpslot
+         SlotContainer.Add(slot); // Add slot to SlotContainer
          if (IsSlotEmpty(slot))
          {
             emptySlots.Add(slot);
@@ -90,7 +90,8 @@ public class ArrowHandler : MonoBehaviour
 
    void OnDisable()
    {
-      tmpslot.Clear();
+      SlotContainer.Clear();
       emptySlots.Clear();
+
    }
 }

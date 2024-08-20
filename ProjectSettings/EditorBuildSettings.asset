@@ -15,12 +15,6 @@ EditorBuildSettings:
     path: Assets/_InGame/Scenes/Game.unity
     guid: 92eb25552382199468d732745b2c64bf
   - enabled: 1
-    path: Assets/_InGame/Scenes/Vegas.unity
-    guid: d50c8a0d4fba4fe4c8ec5e8418cd37f1
-  - enabled: 1
-    path: Assets/_InGame/Scenes/Art.unity
-    guid: c8d940fc8d9e15944be503d89318d5a7
-  - enabled: 1
     path: Assets/_InGame/Scenes/Rules.unity
     guid: 90ded89a971076144b0645351199a7d1
   - enabled: 1

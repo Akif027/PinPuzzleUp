@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 public class SymbolPicker : MonoBehaviour
@@ -24,5 +25,12 @@ public class SymbolPicker : MonoBehaviour
         {
             EventManager.ButtonClickedSymbol(child.gameObject);
         }
+    }
+
+
+    void OnDisable()
+    {
+        button.onClick.RemoveAllListeners();
+
     }
 }
