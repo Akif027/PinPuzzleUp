@@ -1,110 +1,121 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public static class IPlayerPrefs
 {
-    private const string HighScoreKeyPrefix = "HighScore_";
-
-
-
-    // Set High Score
-    public static void SetHighScore(int rank, int score)
+    private const int maxScores = 5;
+    private static List<int> Pyramidscores = new List<int>();
+    private static List<int> Vegascores = new List<int>();
+    private static List<int> Artscores = new List<int>();
+    // private static List<int> scores = new List<int>();
+    private static bool isScoreAdded = false;
+    private static readonly string PyramidScoreKeyFormat = "GameScore_Pyramid";
+    private static readonly string VegasScoreKeyFormat = "GameScore_Vegas";
+    private static readonly string ArtScoreKeyFormat = "GameScore_Art";
+    static IPlayerPrefs()
     {
-        SetInt(HighScoreKeyPrefix + rank, score);
+        LoadScores(PyramidScoreKeyFormat, Pyramidscores);
+        LoadScores(VegasScoreKeyFormat, Vegascores);
+        LoadScores(ArtScoreKeyFormat, Artscores);
     }
 
-    // Get High Score
-    public static int GetHighScore(int rank)
+    public static void AddPyramidScore(int score)
     {
-        return GetInt(HighScoreKeyPrefix + rank, 0);
-    }
+        if (isScoreAdded) return; // Exit if the score has already been added
 
-    // Save the new score if it's in the top 5
-    public static void SaveScore(int score)
-    {
-        List<int> scores = new List<int>();
-
-        // Load existing scores
-        for (int i = 1; i <= 5; i++)
+        if (Pyramidscores.Count >= maxScores)
         {
-            scores.Add(GetHighScore(i));
+            Pyramidscores.RemoveAt(Pyramidscores.Count - 1); // Remove the oldest score
         }
+        Pyramidscores.Insert(0, score); // Insert the new score at the top
+        SaveScores(PyramidScoreKeyFormat, Pyramidscores);
+        isScoreAdded = true; // Set the flag to true after adding the score
+    }
+    public static void AddVegasScore(int score)
+    {
+        if (isScoreAdded) return; // Exit if the score has already been added
 
-        // Add the new score
-        scores.Add(score);
-        scores.Sort((a, b) => b.CompareTo(a)); // Sort descending
-
-        // Save the top 5 scores
-        for (int i = 1; i <= 5; i++)
+        if (Vegascores.Count >= maxScores)
         {
-            SetHighScore(i, scores[i - 1]);
+            Vegascores.RemoveAt(Vegascores.Count - 1); // Remove the oldest score
         }
+        Vegascores.Insert(0, score); // Insert the new score at the top
+        SaveScores(VegasScoreKeyFormat, Vegascores);
+        isScoreAdded = true; // Set the flag to true after adding the score
     }
-    // Set integer value
-    public static void SetInt(string key, int value)
+    public static void AddArtScore(int score)
     {
-        PlayerPrefs.SetInt(key, value);
-        PlayerPrefs.Save();
-    }
+        if (isScoreAdded) return; // Exit if the score has already been added
 
-    // Get integer value with default fallback
-    public static int GetInt(string key, int defaultValue = 0)
-    {
-        return PlayerPrefs.GetInt(key, defaultValue);
-    }
-
-    // Set float value
-    public static void SetFloat(string key, float value)
-    {
-        PlayerPrefs.SetFloat(key, value);
-        PlayerPrefs.Save();
-    }
-
-    // Get float value with default fallback
-    public static float GetFloat(string key, float defaultValue = 0f)
-    {
-        return PlayerPrefs.GetFloat(key, defaultValue);
-    }
-
-    // Set string value
-    public static void SetString(string key, string value)
-    {
-        PlayerPrefs.SetString(key, value);
-        PlayerPrefs.Save();
-    }
-
-    // Get string value with default fallback
-    public static string GetString(string key, string defaultValue = "")
-    {
-        return PlayerPrefs.GetString(key, defaultValue);
-    }
-
-    // Check if a key exists
-    public static bool HasKey(string key)
-    {
-        return PlayerPrefs.HasKey(key);
-    }
-
-    // Delete a specific key
-    public static void DeleteKey(string key)
-    {
-        if (HasKey(key))
+        if (Artscores.Count >= maxScores)
         {
-            PlayerPrefs.DeleteKey(key);
-            PlayerPrefs.Save();
+            Artscores.RemoveAt(Artscores.Count - 1); // Remove the oldest score
+        }
+        Artscores.Insert(0, score); // Insert the new score at the top
+        SaveScores(ArtScoreKeyFormat, Artscores);
+        isScoreAdded = true; // Set the flag to true after adding the score
+    }
+
+    public static void ResetScoreFlag()
+    {
+        isScoreAdded = false; // Reset the flag if needed
+    }
+
+    public static List<int> GetScores(List<int> scores)
+    {
+        return new List<int>(scores); // Return a copy to avoid external modification
+    }
+
+    private static void SaveScores(string key, List<int> scores)
+    {
+
+        // Remove all previously saved scores
+        for (int i = 0; i < maxScores; i++)
+        {
+            PlayerPrefs.DeleteKey(GetScoreKey(key, i));
+        }
+        // Save new scores
+        for (int i = 0; i < scores.Count; i++)
+        {
+            PlayerPrefs.SetInt(GetScoreKey(key, i), scores[i]);
+            //Debug.LogWarning($"Loaded {key}: {scores[i]}");
+        }
+        PlayerPrefs.Save(); // Ensure changes are saved
+    }
+
+    private static void LoadScores(string key_, List<int> scores)
+    {
+        scores.Clear();
+
+        for (int i = 0; i < maxScores; i++)
+        {
+            string key = GetScoreKey(key_, i);
+            if (PlayerPrefs.HasKey(key))
+            {
+                int score = PlayerPrefs.GetInt(key);
+                scores.Add(score);
+            }
         }
     }
 
-    // Delete all keys
-    public static void DeleteAll()
+    private static string GetScoreKey(string key_, int index)
     {
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.Save();
+        return $"{key_}{index}";
     }
 
-    // Save PlayerPrefs (optional as it's called internally after every Set method)
-    public static void Save()
+
+    public static string GetPyramidScoreKey(int index)
     {
-        PlayerPrefs.Save();
+        return $"{PyramidScoreKeyFormat}{index}";
+    }
+    public static string GetVegasScoreKey(int index)
+    {
+        return $"{VegasScoreKeyFormat}{index}";
+    }
+    public static string GetArtScoreKey(int index)
+    {
+        return $"{ArtScoreKeyFormat}{index}";
     }
 }
+

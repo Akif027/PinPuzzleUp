@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 
@@ -172,53 +173,89 @@ public class Pattern : MonoBehaviour
             }
         }
     }
-
+    private List<GameObject> redMatchedSlots = new List<GameObject>();
     public void CheckForMatches()
     {
         List<GameObject> matchedSlots = new List<GameObject>();
 
-        CheckPatternForMatches(matchedSlots, true);
-        CheckPatternForMatches(matchedSlots, false);
+        // Check both horizontal and vertical patterns for matches
+        CheckPatternForMatches(matchedSlots, true);  // Horizontal
+        CheckPatternForMatches(matchedSlots, false); // Vertical
 
-        if (matchedSlots.Count == 0 && IsPoolFilledMoreThan10()) // when the game is finished
+        // Use HashSet to ensure uniqueness
+        HashSet<GameObject> uniqueMatchedSlots = new HashSet<GameObject>(matchedSlots);
+
+        // Separate red symbols from other matched symbols
+        redMatchedSlots = uniqueMatchedSlots.Where(slot => slot.GetComponentInChildren<Slot>().slotType == SlotType.Red).ToList();
+        matchedSlots = uniqueMatchedSlots.Where(slot => slot.GetComponentInChildren<Slot>().slotType != SlotType.Red).ToList();
+
+        // Handle red symbols separately: Only destroy if there are 7 or more
+        if (redMatchedSlots.Count >= 7)
         {
-            IPlayerPrefs.SaveScore(pointSystem.GetTotalPoints());
-            UIhandler.Instance.EndGame();  // No matches found and the pool is filled
+            Debug.Log(redMatchedSlots.Count);
+            // Calculate points for red symbols
+            if (pointSystem != null)
+            {
+                pointSystem.CalculatePoints(redMatchedSlots);
+            }
+
+            // Destroy the red symbols
+            StartCoroutine(DestroySlotsAndShift(redMatchedSlots));
+        }
+
+        // Continue with regular matched symbols (e.g., Blue, Green)
+        if (matchedSlots.Count > 0)
+        {
+            // Calculate points for other symbols
+            if (pointSystem != null)
+            {
+                pointSystem.CalculatePoints(matchedSlots);
+            }
+
+            StartCoroutine(DestroySlotsAndShift(matchedSlots));
+        }
+        else if (AreAllSlotsFilledAndNoMatches()) // Game over only if no matches and pool is filled
+        {
+            if (patternType == PatternType.Pyramid)
+            {
+
+                IPlayerPrefs.AddPyramidScore(pointSystem.GetTotalPoints());
+            }
+            else if (patternType == PatternType.Vegas)
+            {
+
+                IPlayerPrefs.AddVegasScore(pointSystem.GetTotalPoints());
+            }
+            else
+            {
+
+                IPlayerPrefs.AddArtScore(pointSystem.GetTotalPoints());
+            }
+
+            UIhandler.Instance.EndGame();
             return;
         }
-
-        // Calculate points before destroying the slots
-        if (pointSystem != null)
-        {
-            pointSystem.CalculatePoints(matchedSlots);
-        }
-
-        // Now destroy the matched slots
-        foreach (var slot in matchedSlots)
-        {
-            if (slot != null)
-            {
-                Destroy(slot);
-            }
-        }
-
-        StartCoroutine(DestroySlotsAndShift(matchedSlots));
     }
-    private IEnumerator DestroySlotsAndShift(List<GameObject> matchedSlots)
+    public void SavePoints()
     {
-        foreach (var slot in matchedSlots)
+        if (patternType == PatternType.Pyramid)
         {
-            if (slot != null)
-            {
-                Destroy(slot);
-            }
+
+            IPlayerPrefs.AddPyramidScore(pointSystem.GetTotalPoints());
         }
+        else if (patternType == PatternType.Vegas)
+        {
+            Debug.LogError("added");
+            IPlayerPrefs.AddVegasScore(pointSystem.GetTotalPoints());
+        }
+        else
+        {
 
-        // Wait for the end of the frame to ensure all slots are destroyed
-        yield return new WaitForEndOfFrame();
+            IPlayerPrefs.AddArtScore(pointSystem.GetTotalPoints());
+        }
+        UIhandler.Instance.EndGame();
 
-        // Shift remaining symbols to the left
-        ShiftSymbolsToLeft();
+
     }
     private void CheckPatternForMatches(List<GameObject> matchedSlots, bool horizontal)
     {
@@ -232,6 +269,8 @@ public class Pattern : MonoBehaviour
         {
             for (int j = 0; j < maxJ; j++)
             {
+                if (slotGrid[i, j] == null) continue; // Skip null slots
+
                 GameObject slot1 = horizontal ? slotGrid[i, j] : slotGrid[i, j];
                 GameObject slot2 = horizontal ? slotGrid[i, j + 1] : slotGrid[i + 1, j];
                 GameObject slot3 = horizontal ? slotGrid[i, j + 2] : slotGrid[i + 2, j];
@@ -252,6 +291,24 @@ public class Pattern : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator DestroySlotsAndShift(List<GameObject> matchedSlots)
+    {
+        foreach (var slot in matchedSlots)
+        {
+            if (slot != null)
+            {
+                Destroy(slot);
+            }
+        }
+
+        // Wait for the end of the frame to ensure all slots are destroyed
+        yield return new WaitForEndOfFrame();
+
+        // Shift remaining symbols to the left
+        ShiftSymbolsToLeft();
+        redMatchedSlots.Clear();
     }
 
     public void ShiftSymbolsToLeft()
@@ -295,6 +352,48 @@ public class Pattern : MonoBehaviour
         }
     }
 
+    public bool AreAllSlotsFilledAndNoMatches()
+    {
+        // Check if all slots are filled
+        bool allSlotsFilled = true;
+        int rows = slotGrid.GetLength(0);
+        int columns = slotGrid.GetLength(1);
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                if (slotGrid[i, j] != null)
+                {
+                    Slot slot = slotGrid[i, j].GetComponentInChildren<Slot>();
+                    if (slot == null)
+                    {
+                        Debug.Log($"Slot at ({i},{j}) has no Slot component.");
+                        allSlotsFilled = false;
+                    }
+                }
+            }
+        }
+
+        // Check if no matches are found
+        bool noMatches = true;
+        List<GameObject> matchedSlots = new List<GameObject>();
+        CheckPatternForMatches(matchedSlots, true);  // Horizontal
+        CheckPatternForMatches(matchedSlots, false); // Vertical
+
+        if (matchedSlots.Count > 0)
+        {
+            Debug.Log("Matches found!");
+            noMatches = false;
+        }
+
+        // Log final result
+        Debug.Log($"All slots filled: {allSlotsFilled}");
+        Debug.Log($"No matches found: {noMatches}");
+
+        // Return true if all slots are filled and no matches are found
+        return allSlotsFilled && noMatches;
+    }
 
     public bool IsPoolFilledMoreThan10()
     {

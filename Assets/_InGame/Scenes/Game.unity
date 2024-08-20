@@ -1869,7 +1869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotPrefab: {fileID: 595386332623090296, guid: 5bbe463ee3d005d469eab03bcca823da, type: 3}
-  patternType: 0
+  patternType: 2
   mainCamera: {fileID: 963194227}
   spacing: 205
   pyramidAContainer: {fileID: 1794946378}

@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
         EventManager.OnButtonClickSymbol -= AddChildSlot;
         EventManager.OnPopulateSlots -= UpdateSelectedPoolSlots;
         processedObjects.Clear();
+        IPlayerPrefs.ResetScoreFlag();
     }
 
     public void UpdateBottomFieldSlots(GameObject parentContainer)
@@ -165,7 +166,7 @@ public class GameManager : MonoBehaviour
         }
 
     }
-
+    bool istrue = false;
     void Update()
     {
         if (pattern.IsPoolFilledMoreThan10())
@@ -186,7 +187,21 @@ public class GameManager : MonoBehaviour
 
         }
 
+        if (Input.GetKey(KeyCode.A))
+        {
+            istrue = true;
+
+
+        }
+        if (istrue)
+        {
+
+            pattern.SavePoints();
+            istrue = false;
+        }
     }
+
+
 
 }
 

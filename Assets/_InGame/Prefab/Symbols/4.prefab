@@ -90,5 +90,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotType: 1
   raycastDistance: 19.3
-  DownSlot: {fileID: 0}
-  raycastOriginOffset: 60

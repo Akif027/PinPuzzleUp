@@ -17,7 +17,8 @@ public class PointSystem : MonoBehaviour
 
     private readonly Dictionary<int, int> redPointsTable = new Dictionary<int, int>
     {
-        { 7, 500 }, { 8, 750 }, { 9, 1000 }, { 10, 1500 }
+         { 7, 500 },
+        { 8, 750 }, { 9, 1000 }, { 10, 1500 }
     };
 
     public void CalculatePoints(List<GameObject> matchedSlots)
