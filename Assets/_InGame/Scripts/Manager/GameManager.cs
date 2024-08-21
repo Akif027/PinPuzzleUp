@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> processedObjects = new List<GameObject>();
 
     [SerializeField] Pattern pattern;
-
+    [SerializeField] GameObject Canvas;
     private void Awake()
     {
         if (Instance == null)
@@ -52,23 +52,24 @@ public class GameManager : MonoBehaviour
         // Iterate through all children recursively
         foreach (Transform child in parentContainer.GetComponentsInChildren<Transform>(true))
         {
-            // Check if the current child is the one where we want to place a slot
             if (child.name == "SymbolPos")
             {
-                // Check if any Slot object already exists in the entire hierarchy under this child
                 if (!DoesSlotExistInHierarchy(child))
                 {
-                    // Instantiate a random Slot from the SlotsList if no Slot exists
                     var randomSlotPrefab = gameData.SlotsList[random.Next(gameData.SlotsList.Count)];
                     var slotInstance = Instantiate(randomSlotPrefab, child);
 
                     slotInstance.transform.localPosition = Vector3.zero;
                     slotInstance.transform.localRotation = Quaternion.identity;
                     slotInstance.transform.localScale = Vector3.one;
+
+                    // Apply fade and optionally destroy the slot
+                    doTweenAnimations.Fade(slotInstance.gameObject, 0.5f, fadeIn: true, shouldDestroy: false); // Set shouldDestroy to true or false based on your requirement
                 }
             }
         }
     }
+
 
     private bool DoesSlotExistInHierarchy(Transform parent)
     {
@@ -142,6 +143,11 @@ public class GameManager : MonoBehaviour
                     slotInstance.transform.localPosition = Vector3.zero;
                     slotInstance.transform.localRotation = Quaternion.identity;
                     slotInstance.transform.localScale = Vector3.one;
+                    Vector3 punchVector = new Vector3(0, 0.5f, 0);
+                    doTweenAnimations.PunchScale(PoolSlots[i].gameObject, punchVector, 0.5f, 10, 1);
+                    doTweenAnimations.Fade(slotInstance, 0.5f, fadeIn: true, shouldDestroy: false);
+
+
                 }
             }
         }
@@ -201,7 +207,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
+    public GameObject GetPopEffect(Transform pos)
+    {
+        GameObject effect = Instantiate(gameData.popEffect, pos.position, Quaternion.identity, Canvas.transform);
+        //Destroy(effect, 1);
+        return effect;
+    }
 
 }
 

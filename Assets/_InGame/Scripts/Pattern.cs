@@ -302,16 +302,22 @@ public class Pattern : MonoBehaviour
 
     private IEnumerator DestroySlotsAndShift(List<GameObject> matchedSlots)
     {
+        yield return new WaitForSeconds(0.4f);
         foreach (var slot in matchedSlots)
         {
             if (slot != null)
             {
-                Destroy(slot);
+
+                GameManager.Instance.GetPopEffect(slot.transform);
+                yield return new WaitForSeconds(0.1f);
+                doTweenAnimations.ScaleOut(slot, 0.1f, shouldDestroy: true); // Scale in and then destroy
+
+
             }
         }
 
-        // Wait for the end of the frame to ensure all slots are destroyed
-        yield return new WaitForEndOfFrame();
+        // Wait for the fade-out animation to complete
+        yield return new WaitForSeconds(0.5f);
 
         // Shift remaining symbols to the left
         ShiftSymbolsToLeft();

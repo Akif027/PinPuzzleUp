@@ -31,6 +31,7 @@ public class ArrowHandler : MonoBehaviour
       {
          if (IsSlotEmpty(item))
          {
+
             hasEmptySlots = true;
             break;
          }
