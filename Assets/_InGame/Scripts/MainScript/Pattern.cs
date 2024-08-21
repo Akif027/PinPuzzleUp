@@ -311,7 +311,7 @@ public class Pattern : MonoBehaviour
                 GameManager.Instance.GetPopEffect(slot.transform);
                 yield return new WaitForSeconds(0.1f);
                 doTweenAnimations.ScaleOut(slot, 0.1f, shouldDestroy: true); // Scale in and then destroy
-
+                SoundManager.Instance.PlayOnCombo();
 
             }
         }

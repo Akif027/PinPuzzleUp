@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIhandler : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class UIhandler : MonoBehaviour
     {
         TitleName.text = GameManager.Instance.GetpatternType.ToString();
         Game_FinishedUIPanel.transform.GetChild(1).GetComponent<TMP_Text>().text = TitleName.text;
+        Game_ExitUIPanel.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(CloseExitMatchPanel);
         Game_ExitUIPanel.SetActive(false);
         Game_FinishedUIPanel.SetActive(false);
 
@@ -33,16 +35,30 @@ public class UIhandler : MonoBehaviour
     }
     public void EndGame()
     {
-
+        SoundManager.Instance.PlayEndTheGame();
         Game_FinishedUIPanel.SetActive(true);
+
+    }
+    public void OpenExitMatchPanel()
+    {
+        SoundManager.Instance.PlayOnButtonPress();
+        Game_ExitUIPanel.SetActive(true);
+    }
+
+    public void CloseExitMatchPanel()
+    {
+        SoundManager.Instance.PlayOnButtonPress();
+        Game_ExitUIPanel.SetActive(false);
     }
     public void LoadTheScene(string S)
     {
+        SoundManager.Instance.PlayOnButtonPress();
         CustomSceneManager.LoadSceneAsync(S);
 
     }
     public void Restart()
     {
+        SoundManager.Instance.PlayOnButtonPress();
         CustomSceneManager.ReloadCurrentScene();
 
     }

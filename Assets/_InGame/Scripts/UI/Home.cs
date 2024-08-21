@@ -18,7 +18,7 @@ public class Home : MonoBehaviour
 
     void GoTomenu()
     {
-
+        SoundManager.Instance.PlayOnButtonPress();
         CustomSceneManager.LoadSceneAsync("Menu");
 
     }

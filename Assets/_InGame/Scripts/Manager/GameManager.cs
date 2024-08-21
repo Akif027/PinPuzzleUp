@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
                     Vector3 punchVector = new Vector3(0, 0.5f, 0);
                     doTweenAnimations.PunchScale(PoolSlots[i].gameObject, punchVector, 0.5f, 10, 1);
                     doTweenAnimations.Fade(slotInstance, 0.5f, fadeIn: true, shouldDestroy: false);
-
+                    SoundManager.Instance.PlayOnFillPool();
 
                 }
             }

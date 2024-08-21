@@ -22,6 +22,7 @@ public class ModeManager : MonoBehaviour
 
     void ThePyramidMode()
     {
+        SoundManager.Instance.PlayOnButtonPress();
         IPlayerPrefs.SetMode((int)PatternType.Pyramid);
         LoadModeScene();
 
@@ -29,12 +30,14 @@ public class ModeManager : MonoBehaviour
 
     void TheVegasMode()
     {
+        SoundManager.Instance.PlayOnButtonPress();
         IPlayerPrefs.SetMode((int)PatternType.Vegas);
         LoadModeScene();
 
     }
     void TheArtMode()
     {
+        SoundManager.Instance.PlayOnButtonPress();
         IPlayerPrefs.SetMode((int)PatternType.Art);
         LoadModeScene();
 

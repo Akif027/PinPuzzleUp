@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,8 +18,8 @@ public class ArrowHandler : MonoBehaviour
       arrowButton = GetComponent<Button>();
       if (arrowButton != null)
       {
-         HandleArrowButtonClick();
-         arrowButton.onClick.AddListener(HandleArrowButtonClick);
+         HandleArrowButtonClick(false);
+         arrowButton.onClick.AddListener(() => HandleArrowButtonClick(true));
       }
    }
 
@@ -35,16 +34,22 @@ public class ArrowHandler : MonoBehaviour
             hasEmptySlots = true;
             break;
          }
+
       }
 
       arrowButton.interactable = hasEmptySlots;
    }
 
-   private void HandleArrowButtonClick()
+   private void HandleArrowButtonClick(bool PlaySound)
    {
+      if (PlaySound)
+      {
+         SoundManager.Instance.PlayOnButtonPress();
+      }
       emptySlots.Clear();
       emptySlots = GetEmptySlotsInDirection();
       EventManager.PopulateSlots(emptySlots);
+
 
       if (emptySlots.Count == 0)
       {

@@ -20,6 +20,7 @@ public class MenuManager : MonoBehaviour
 
     void LoadTheScene(string S)
     {
+        SoundManager.Instance.PlayOnButtonPress();
         CustomSceneManager.LoadSceneAsync(S);
 
     }

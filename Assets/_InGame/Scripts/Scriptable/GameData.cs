@@ -5,6 +5,11 @@ using UnityEngine;
 public class GameData : ScriptableObject
 {
     public GameObject popEffect;
+    public AudioClip BackGroundA;
+    public AudioClip OnfillpoolA;
+    public AudioClip EndTheGameA;
+    public AudioClip OnComboA;
+    public AudioClip OnButtonPressA;
     public List<Slot> SlotsList;
 
 

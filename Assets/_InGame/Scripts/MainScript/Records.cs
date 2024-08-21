@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Records : MonoBehaviour
@@ -17,12 +18,15 @@ public class Records : MonoBehaviour
     {
 
         PyramidB.onClick.AddListener(HandlePyramidMode);
+        PyramidB.onClick.Invoke();
+        EventSystem.current.SetSelectedGameObject(PyramidB.gameObject);
         VegasB.onClick.AddListener(HandleVegasMode);
         ArtB.onClick.AddListener(HandleArtMode);
 
     }
     void HandlePyramidMode()
     {
+        SoundManager.Instance.PlayOnButtonPress();
         LoadPyramidScores();
         DisplayScores();
 
@@ -30,12 +34,14 @@ public class Records : MonoBehaviour
 
     void HandleVegasMode()
     {
+        SoundManager.Instance.PlayOnButtonPress();
         LoadVegasScores();
         DisplayScores();
 
     }
     void HandleArtMode()
     {
+        SoundManager.Instance.PlayOnButtonPress();
         LoadArtScores();
         DisplayScores();
 
@@ -125,16 +131,5 @@ public class Records : MonoBehaviour
     }
 
 
-    // private string GetSPyramidcoreKey(int index)
-    // {
-    //     return $"PyramidScore_{index}";
-    // }
-    // private string GetVegasScoreKey(int index)
-    // {
-    //     return $"VegasScore_{index}";
-    // }
-    // private string GetArtScoreKey(int index)
-    // {
-    //     return $"Art_{index}";
-    // }
+
 }

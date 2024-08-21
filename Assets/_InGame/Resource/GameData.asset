@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: GameData
   m_EditorClassIdentifier: 
   popEffect: {fileID: 3784206383588855864, guid: 3136e533d6a88a74f8025a53b70fa7a5, type: 3}
+  BackGroundA: {fileID: 8300000, guid: 87f095437b5bc6247b3ea96ce7e4a581, type: 3}
+  OnfillpoolA: {fileID: 8300000, guid: 6469bfd99828ed24a80fbdba3f26cc8a, type: 3}
+  EndTheGameA: {fileID: 8300000, guid: c86442e2614ccb245a962b9e3cfb5106, type: 3}
+  OnComboA: {fileID: 8300000, guid: e15529ed0c9d5ec499cbc7d677d15beb, type: 3}
+  OnButtonPressA: {fileID: 8300000, guid: 28bc86eab389b2446ae51d83873ff930, type: 3}
   SlotsList:
   - {fileID: -2187692947382446738, guid: 20271ada42ec5b6498bd23a9009dfb0c, type: 3}
   - {fileID: -819197634215814595, guid: 03de13bc6a47fd147bd87c3e4fe3d30b, type: 3}

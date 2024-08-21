@@ -20,6 +20,7 @@ public class SymbolPicker : MonoBehaviour
 
     public void HandleClick()
     {
+        SoundManager.Instance.PlayOnButtonPress();
         child = GetComponentInChildren<Slot>();
         if (child != null)
         {
