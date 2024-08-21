@@ -32,3 +32,4 @@ MonoBehaviour:
   - {fileID: 3701158097726260979, guid: ef1f98fe5840bce48b037984bce4fa07, type: 3}
   - {fileID: 3821725870159819342, guid: 83966e65383125442afa3eae051ba5af, type: 3}
   - {fileID: 3701158097726260979, guid: ee2a9c42e6398ce40b082341773e5730, type: 3}
+  BottomFieldOnSelectButtonColor: {r: 0.3070846, g: 1, b: 0.17647058, a: 1}

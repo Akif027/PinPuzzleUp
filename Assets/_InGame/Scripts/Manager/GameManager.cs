@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
     public GameData gameData;
     [Header("ChooseFiedl/Canvas")] public GameObject ImageSymbolContainer;
     public IReadOnlyCollection<GameObject> ProcessedObjects => processedObjects;
     public List<GameObject> PoolSlots = new List<GameObject>();
     public List<GameObject> processedObjects = new List<GameObject>();
-
     [SerializeField] Pattern pattern;
     [SerializeField] GameObject Canvas;
+
     private void Awake()
     {
         if (Instance == null)
@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
         {
             if (processedObject != null)
             {
+                processedObject.transform.parent.parent.GetComponent<SymbolPicker>().GetClickCount = 0;
                 Debug.Log($"Destroying: {processedObject.name}");
                 Destroy(processedObject);
             }
@@ -104,6 +105,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitForEndOfFrame(); // Wait for one frame to ensure destruction is complete
         UpdateBottomFieldSlots(ImageSymbolContainer);
     }
+    private void ChangeColor(GameObject obj, Color c)
+    {
+        obj.transform.parent.parent.GetComponent<Image>().color = c;
+    }
     public void AddChildSlot(GameObject childObject)
     {
         Debug.Log($"Searching in: {childObject.name}");
@@ -116,7 +121,29 @@ public class GameManager : MonoBehaviour
         {
 
             processedObjects.Add(childObject);
+            ChangeColor(childObject, gameData.BottomFieldOnSelectButtonColor);
 
+        }
+        else
+        {
+            Debug.Log($"No Slot component found in child: {childObject.gameObject.name}");
+        }
+
+    }
+
+    public void RemoveChildSlot(GameObject childObject)
+    {
+        Debug.Log($"Searching in: {childObject.name}");
+
+        if (!processedObjects.Contains(childObject))
+            return;
+
+
+        if (childObject != null)
+        {
+
+            processedObjects.Remove(childObject);
+            ChangeColor(childObject, Color.white);
         }
         else
         {
@@ -138,6 +165,7 @@ public class GameManager : MonoBehaviour
             {
                 if (child.GetComponent<Slot>() == null)
                 {
+                    ChangeColor(processedObjects[i], Color.white);
                     // Instantiate a Slot if none exists
                     var slotInstance = Instantiate(processedObjects[i], child);
                     slotInstance.transform.localPosition = Vector3.zero;
@@ -146,7 +174,7 @@ public class GameManager : MonoBehaviour
                     Vector3 punchVector = new Vector3(0, 0.5f, 0);
                     doTweenAnimations.PunchScale(PoolSlots[i].gameObject, punchVector, 0.5f, 10, 1);
                     doTweenAnimations.Fade(slotInstance, 0.5f, fadeIn: true, shouldDestroy: false);
-                    SoundManager.Instance.PlayOnFillPool();
+                    if (SoundManager.Instance != null) SoundManager.Instance.PlayOnFillPool();
 
                 }
             }
@@ -159,6 +187,11 @@ public class GameManager : MonoBehaviour
     public void ClearList()
     {
         PoolSlots.Clear();
+
+        foreach (var item in processedObjects)
+        {
+            ChangeColor(item, Color.white);
+        }
         processedObjects.Clear();
         // processedObjects.Clear();
     }

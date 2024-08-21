@@ -49,10 +49,6 @@ public class Pattern : MonoBehaviour
     private void Awake()
     {
         patternType = IPlayerPrefs.GetMode();
-
-    }
-    private void Start()
-    {
         mainCamera = mainCamera ?? Camera.main;
 
         switch (patternType)
@@ -67,7 +63,9 @@ public class Pattern : MonoBehaviour
                 ActivateContainerAndGeneratePattern(ArtAContainer, patternArt);
                 break;
         }
+
     }
+
 
     private void ActivateContainerAndGeneratePattern(GameObject container, int[,] pattern)
     {
