@@ -7,9 +7,9 @@ public class SymbolPicker : MonoBehaviour
 {
     Button button;
 
-    [SerializeField] Slot child;
 
-    private int clickCount = 0; // Click counter variable
+
+    public int clickCount = 0; // Click counter variable
 
 
     public int GetClickCount
@@ -40,7 +40,7 @@ public class SymbolPicker : MonoBehaviour
             SoundManager.Instance.PlayOnButtonPress();
         }
 
-        child = GetComponentInChildren<Slot>();
+        Slot child = GetComponentInChildren<Slot>();
         if (child != null)
         {
             if (clickCount == 2)

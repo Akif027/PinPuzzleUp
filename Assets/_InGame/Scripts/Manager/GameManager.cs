@@ -82,15 +82,16 @@ public class GameManager : MonoBehaviour
         }
         return false;
     }
-    public void ResetProcessedSlots()
+    public void ResetProcessedSlots(bool canDestroy)
     {
         foreach (var processedObject in processedObjects)
         {
             if (processedObject != null)
             {
+                ChangeColor(processedObject, Color.white);
                 processedObject.transform.parent.parent.GetComponent<SymbolPicker>().GetClickCount = 0;
                 Debug.Log($"Destroying: {processedObject.name}");
-                Destroy(processedObject);
+                if (canDestroy) Destroy(processedObject);
             }
         }
 
@@ -154,6 +155,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdateSelectedPoolSlots(List<GameObject> slots) //its getting called after we click on the arrow button
     {
+
         PoolSlots = slots;
 
         if (processedObjects.Count == 0 || processedObjects.Count != PoolSlots.Count)
@@ -180,19 +182,14 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        ResetProcessedSlots();
+        ResetProcessedSlots(true);
         //  UpdateBottomFieldSlots(ImageSymbolContainer);
     }
 
     public void ClearList()
     {
         PoolSlots.Clear();
-
-        foreach (var item in processedObjects)
-        {
-            ChangeColor(item, Color.white);
-        }
-        processedObjects.Clear();
+        ResetProcessedSlots(false);
         // processedObjects.Clear();
     }
 
@@ -205,7 +202,6 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    bool istrue = false;
     void Update()
     {
         if (pattern.IsPoolFilledMoreThan10())
