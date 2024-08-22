@@ -6,7 +6,7 @@ public class Slot : MonoBehaviour
 {
 
     public SlotType slotType;
-    // Distance for the raycast
-    public float raycastDistance = 5f;
+    public float probability;
+
 
 }

@@ -148,36 +148,7 @@ public class Pattern : MonoBehaviour
             }
         }
     }
-    public void DebugSlotGrid()
-    {
-        int rows = slotGrid.GetLength(0);
-        int columns = slotGrid.GetLength(1);
 
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < columns; j++)
-            {
-                GameObject slotComponent = slotGrid[i, j];
-                if (slotComponent != null)
-                {
-                    // Assuming Slot component has a property like 'slotType' or similar to identify it
-                    Slot slotComp = slotComponent.GetComponentInChildren<Slot>();
-                    if (slotComp != null)
-                    {
-                        Debug.LogError($"Slot at ({i},{j}) is filled with type: {slotComp.slotType}");
-                    }
-                    else
-                    {
-                        Debug.LogError($"Slot at ({i},{j}) is empty.");
-                    }
-                }
-                else
-                {
-                    Debug.LogError($"Slot at ({i},{j}) is null.");
-                }
-            }
-        }
-    }
     private List<GameObject> redMatchedSlots = new List<GameObject>();
     public void CheckForMatches()
     {
@@ -278,19 +249,20 @@ public class Pattern : MonoBehaviour
         }
     }
 
+    private HashSet<GameObject> slotsWithEffect = new HashSet<GameObject>();
+
     private IEnumerator DestroySlotsAndShift(List<GameObject> matchedSlots)
     {
         yield return new WaitForSeconds(0.4f);
         foreach (var slot in matchedSlots)
         {
-            if (slot != null)
+            if (slot != null && !slotsWithEffect.Contains(slot))
             {
-
+                slotsWithEffect.Add(slot); // Mark this slot as having an effect instantiated
                 GameManager.Instance.GetPopEffect(slot.transform);
                 yield return new WaitForSeconds(0.1f);
                 doTweenAnimations.ScaleOut(slot, 0.1f, shouldDestroy: true); // Scale in and then destroy
                 SoundManager.Instance.PlayOnCombo();
-
             }
         }
 
@@ -300,8 +272,37 @@ public class Pattern : MonoBehaviour
         // Shift remaining symbols to the left
         ShiftSymbolsToLeft();
         redMatchedSlots.Clear();
-    }
 
+        // Clear the hash set after the process is complete
+        slotsWithEffect.Clear();
+    }
+    public void DebugGridState()
+    {
+        int rows = slotGrid.GetLength(0);
+        int columns = slotGrid.GetLength(1);
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                if (slotGrid[i, j] != null)
+                {
+                    Slot slot = slotGrid[i, j].GetComponentInChildren<Slot>();
+                    if (slot)
+                    {
+                        Debug.Log($"Slot at ({i},{j}) contains symbol of type: {slot?.slotType}");
+                    }
+                    else
+                    {
+
+                        Debug.Log($"Slot at ({i},{j}) is empty.");
+                    }
+
+                }
+
+            }
+        }
+    }
     public void ShiftSymbolsToLeft()
     {
         int rows = slotGrid.GetLength(0);
@@ -312,36 +313,45 @@ public class Pattern : MonoBehaviour
             int emptyIndex = -1;
             for (int j = 0; j < columns; j++)
             {
-                if (slotGrid[i, j] != null)
+
+                if (slotGrid[i, j] != null) // Check if the current slot is not null
                 {
                     Transform slotTransform = slotGrid[i, j].transform;
-                    if (slotTransform.childCount > 0) // Check if the slot has any children
+
+                    if (slotTransform.childCount > 0) // Check if the slot has any children (symbols)
                     {
                         if (emptyIndex != -1) // Only proceed if an empty slot has been found
                         {
                             GameObject symbol = slotTransform.GetChild(0).gameObject;
-                            symbol.transform.SetParent(slotGrid[i, emptyIndex].transform);
-                            symbol.transform.SetPositionAndRotation(
-                                slotGrid[i, emptyIndex].transform.position,
-                                slotGrid[i, emptyIndex].transform.rotation
-                            );
 
-                            // Update the grid reference
-                            slotGrid[i, emptyIndex] = slotGrid[i, j];
-                            slotGrid[i, j] = null;
+                            if (slotGrid[i, emptyIndex] != null) // Check if the destination slot is not null
+                            {
+                                symbol.transform.SetParent(slotGrid[i, emptyIndex].transform);
+                                symbol.transform.SetPositionAndRotation(
+                                    slotGrid[i, emptyIndex].transform.position,
+                                    slotGrid[i, emptyIndex].transform.rotation
+                                );
 
-                            // Move the emptyIndex to the next empty position
-                            emptyIndex++;
+                                emptyIndex++;
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"Destination slot at ({i},{emptyIndex}) is null.");
+                            }
                         }
                     }
-                    else if (emptyIndex == -1)
+                    else if (emptyIndex == -1) // If this slot is empty and no previous empty slot found
                     {
                         emptyIndex = j; // Found the first empty slot
                     }
                 }
+
             }
         }
+        CheckForMatches();
     }
+
+
 
     public bool AreAllSlotsFilledAndNoMatches()
     {

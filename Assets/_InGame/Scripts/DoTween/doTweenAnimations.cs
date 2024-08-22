@@ -25,6 +25,7 @@ public class doTweenAnimations : MonoBehaviour
     // Static method to scale out an object (from normal size to small)
     public static void ScaleOut(GameObject target, float duration, Ease easeType = Ease.InBack, bool shouldDestroy = true)
     {
+        if (target == null) return;
         target.transform.DOScale(Vector3.zero, duration).SetEase(easeType).OnComplete(() =>
         {
             if (shouldDestroy)

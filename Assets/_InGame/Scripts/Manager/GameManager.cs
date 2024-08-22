@@ -47,7 +47,8 @@ public class GameManager : MonoBehaviour
     {
         if (!parentContainer || !gameData.SlotsList.Any()) return;
 
-        var random = new System.Random();
+        // Calculate the total probability
+        float totalProbability = gameData.SlotsList.Sum(slotPrefab => slotPrefab.GetComponent<Slot>().probability);
 
         // Iterate through all children recursively
         foreach (Transform child in parentContainer.GetComponentsInChildren<Transform>(true))
@@ -56,15 +57,37 @@ public class GameManager : MonoBehaviour
             {
                 if (!DoesSlotExistInHierarchy(child))
                 {
-                    var randomSlotPrefab = gameData.SlotsList[random.Next(gameData.SlotsList.Count)];
-                    var slotInstance = Instantiate(randomSlotPrefab, child);
+                    // Choose a random value between 0 and the total probability
+                    float randomValue = UnityEngine.Random.Range(0f, totalProbability);
+                    float cumulativeProbability = 0f;
 
-                    slotInstance.transform.localPosition = Vector3.zero;
-                    slotInstance.transform.localRotation = Quaternion.identity;
-                    slotInstance.transform.localScale = Vector3.one;
+                    GameObject selectedPrefab = null;
 
-                    // Apply fade and optionally destroy the slot
-                    doTweenAnimations.Fade(slotInstance.gameObject, 0.5f, fadeIn: true, shouldDestroy: false); // Set shouldDestroy to true or false based on your requirement
+                    // Select a prefab based on the weighted probability
+                    foreach (var slotPrefab in gameData.SlotsList)
+                    {
+                        Slot slotComponent = slotPrefab.GetComponent<Slot>();
+                        cumulativeProbability += slotComponent.probability;
+
+                        if (randomValue <= cumulativeProbability)
+                        {
+                            selectedPrefab = slotPrefab.gameObject;
+                            break;
+                        }
+                    }
+
+                    // Instantiate the selected prefab
+                    if (selectedPrefab != null)
+                    {
+                        var slotInstance = Instantiate(selectedPrefab, child);
+
+                        slotInstance.transform.localPosition = Vector3.zero;
+                        slotInstance.transform.localRotation = Quaternion.identity;
+                        slotInstance.transform.localScale = Vector3.one;
+
+                        // Apply fade and optionally destroy the slot
+                        doTweenAnimations.Fade(slotInstance.gameObject, 0.5f, fadeIn: true, shouldDestroy: false);
+                    }
                 }
             }
         }
@@ -77,7 +100,7 @@ public class GameManager : MonoBehaviour
         Slot existingSlot = parent.GetComponentInChildren<Slot>();
         if (existingSlot != null)
         {
-            Debug.Log($"Slot found in {existingSlot.gameObject.name} under {parent.name}");
+            Debug.Log($"Slot found in {existingSlot.gameObject.name} under {parent.parent.name}");
             return true;
         }
         return false;
@@ -204,11 +227,16 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+
         if (pattern.IsPoolFilledMoreThan10())
         {
 
             pattern.CheckForMatches();
         }
+
+
+
+
 
     }
 

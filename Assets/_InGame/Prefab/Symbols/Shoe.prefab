@@ -89,4 +89,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotType: 10
-  raycastDistance: 19.3
+  probability: 1
