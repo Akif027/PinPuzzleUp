@@ -241,27 +241,7 @@ public class Pattern : MonoBehaviour
             return;
         }
     }
-    public void SavePoints()
-    {
-        if (patternType == PatternType.Pyramid)
-        {
 
-            IPlayerPrefs.AddPyramidScore(pointSystem.GetTotalPoints());
-        }
-        else if (patternType == PatternType.Vegas)
-        {
-            Debug.LogError("added");
-            IPlayerPrefs.AddVegasScore(pointSystem.GetTotalPoints());
-        }
-        else
-        {
-
-            IPlayerPrefs.AddArtScore(pointSystem.GetTotalPoints());
-        }
-        UIhandler.Instance.EndGame();
-
-
-    }
     private void CheckPatternForMatches(List<GameObject> matchedSlots, bool horizontal)
     {
         int rows = slotGrid.GetLength(0);

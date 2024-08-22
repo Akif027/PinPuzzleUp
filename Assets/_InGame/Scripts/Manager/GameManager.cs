@@ -213,37 +213,13 @@ public class GameManager : MonoBehaviour
 
             pattern.CheckForMatches();
         }
-        if (Input.GetMouseButtonDown(1))
-        {
 
-            pattern.CheckForMatches();
-
-        }
-        if (Input.GetKey(KeyCode.L))
-        {
-
-            pattern.ShiftSymbolsToLeft();
-
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            istrue = true;
-
-
-        }
-        if (istrue)
-        {
-
-            pattern.SavePoints();
-            istrue = false;
-        }
     }
 
     public GameObject GetPopEffect(Transform pos)
     {
         GameObject effect = Instantiate(gameData.popEffect, pos.position, Quaternion.identity, Canvas.transform);
-        //Destroy(effect, 1);
+        Destroy(effect, 1);
         return effect;
     }
 
