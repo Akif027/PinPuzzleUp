@@ -20,13 +20,22 @@ public class ArrowHandler : MonoBehaviour
       {
 
          arrowButton.onClick.AddListener(() => HandleArrowButtonClick(true));
+
+         StartCoroutine(DelayedAddSlot());
       }
+   }
+   private IEnumerator DelayedAddSlot()
+   {
+      yield return new WaitForSeconds(1); // Wait for 2 seconds
+      CanCheckEmptySlot = true;
+      AddSlot(); // Call AddSlot after the wait
    }
 
    void Update()
    {
 
       UpdateArrowButtonInteractable();
+
    }
 
 
@@ -35,6 +44,7 @@ public class ArrowHandler : MonoBehaviour
    {
       if (!CanCheckEmptySlot) return;
       bool hasEmptySlots = CheckForEmptySlots();
+
       arrowButton.interactable = hasEmptySlots;
    }
 
@@ -84,6 +94,14 @@ public class ArrowHandler : MonoBehaviour
       }
 
       return emptySlots;
+   }
+   private void AddSlot()
+   {
+      emptySlots.Clear();
+      GetEmptySlotsInDirection();
+      // Update the button interactability after processing.
+      UpdateArrowButtonInteractable();
+
    }
 
    private bool IsSlotEmpty(GameObject slot)

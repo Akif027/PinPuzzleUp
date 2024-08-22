@@ -243,7 +243,7 @@ public class GameManager : MonoBehaviour
     public GameObject GetPopEffect(Transform pos)
     {
         GameObject effect = Instantiate(gameData.popEffect, pos.position, Quaternion.identity, Canvas.transform);
-        Destroy(effect, 1);
+        Destroy(effect, 2);
         return effect;
     }
 

@@ -18,11 +18,18 @@ public class Records : MonoBehaviour
     {
 
         PyramidB.onClick.AddListener(HandlePyramidMode);
-        PyramidB.onClick.Invoke();
-        EventSystem.current.SetSelectedGameObject(PyramidB.gameObject);
+        OnStart();
+
         VegasB.onClick.AddListener(HandleVegasMode);
         ArtB.onClick.AddListener(HandleArtMode);
 
+    }
+
+    void OnStart()
+    {
+        LoadPyramidScores();
+        DisplayScores();
+        EventSystem.current.SetSelectedGameObject(PyramidB.gameObject);
     }
     void HandlePyramidMode()
     {
