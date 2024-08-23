@@ -145,9 +145,8 @@ public class Pattern : MonoBehaviour
     {
         List<GameObject> matchedSlots = new List<GameObject>();
 
-        // Check for horizontal and vertical matches
-        CheckPatternForMatches(matchedSlots, true);  // Horizontal
-        CheckPatternForMatches(matchedSlots, false); // Vertical
+        // Group slots by type and check for repetitions
+        CheckForRepetitionsByType(matchedSlots);
 
         // Ensure uniqueness
         HashSet<GameObject> uniqueMatchedSlots = new HashSet<GameObject>(matchedSlots);
@@ -160,7 +159,6 @@ public class Pattern : MonoBehaviour
         Debug.LogError(allMatchedSlots.Count);
         if (allMatchedSlots.Count >= 7 || (matchedSlots.Count >= 10))
         {
-
             pointSystem?.CalculatePoints(allMatchedSlots);
             StartCoroutine(DestroySlotsAndShift(allMatchedSlots));
         }
@@ -168,6 +166,43 @@ public class Pattern : MonoBehaviour
         {
             UpdatePlayerPrefsScore();
             UIhandler.Instance.EndGame();
+        }
+    }
+
+    // New method to check for repetitions by type
+    private void CheckForRepetitionsByType(List<GameObject> matchedSlots)
+    {
+        Dictionary<SlotType, List<GameObject>> slotGroups = new Dictionary<SlotType, List<GameObject>>();
+
+        int rows = slotGrid.GetLength(0);
+        int columns = slotGrid.GetLength(1);
+
+        // Group slots by their type
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                if (slotGrid[i, j] == null) continue;
+
+                Slot slotComp = slotGrid[i, j].GetComponentInChildren<Slot>();
+                if (slotComp == null) continue;
+
+                SlotType slotType = slotComp.slotType;
+                if (!slotGroups.ContainsKey(slotType))
+                {
+                    slotGroups[slotType] = new List<GameObject>();
+                }
+                slotGroups[slotType].Add(slotComp.gameObject);
+            }
+        }
+
+        // Check if any group has enough repetitions to be considered a match
+        foreach (var group in slotGroups)
+        {
+            if (group.Value.Count >= 3) // Replace 3 with your repetition threshold
+            {
+                matchedSlots.AddRange(group.Value);
+            }
         }
     }
 
