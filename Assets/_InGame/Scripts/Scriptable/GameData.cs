@@ -12,7 +12,6 @@ public class GameData : ScriptableObject
     public AudioClip OnButtonPressA;
     public List<Slot> SlotsList;
 
-    public Color BottomFieldOnSelectButtonColor;
 
 }
 

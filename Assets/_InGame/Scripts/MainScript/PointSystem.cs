@@ -6,6 +6,7 @@ using UnityEngine;
 public class PointSystem : MonoBehaviour
 {
     private int totalPoints = 0;
+    private bool pointsCalculated = false;  // Flag to prevent multiple calculations
     public TMP_Text scoreText;  // Reference to the UI Text component for the score
     public TMP_Text ScoretextGameFinished; // Reference to the UI Text component for the final score
 
@@ -17,12 +18,18 @@ public class PointSystem : MonoBehaviour
 
     private readonly Dictionary<int, int> redPointsTable = new Dictionary<int, int>
     {
-         { 7, 500 },
-        { 8, 750 }, { 9, 1000 }, { 10, 1500 }
+        { 7, 500 }, { 8, 750 }, { 9, 1000 }, { 10, 1500 }
     };
 
     public void CalculatePoints(List<GameObject> matchedSlots)
     {
+        // Check if points have already been calculated for this match
+        if (pointsCalculated)
+        {
+            Debug.LogWarning("Points have already been calculated for this match.");
+            return;
+        }
+
         // Use a HashSet to track which slots have already been counted
         HashSet<GameObject> countedSlots = new HashSet<GameObject>();
 
@@ -79,10 +86,12 @@ public class PointSystem : MonoBehaviour
             }
         }
 
+        // Set the flag to indicate points have been calculated
+        pointsCalculated = true;
+
         Debug.Log("Total Points: " + totalPoints);
         UpdateScoreText();
     }
-
 
     private void UpdateScoreText()
     {
@@ -96,15 +105,13 @@ public class PointSystem : MonoBehaviour
         }
     }
 
-    public void ResetPoints()
+    public void AllowPointsCalculation()
     {
-        totalPoints = 0;
+        pointsCalculated = false;  // Reset the flag when ready for a new calculation
     }
 
     public int GetTotalPoints()
     {
         return totalPoints;
     }
-
-
 }

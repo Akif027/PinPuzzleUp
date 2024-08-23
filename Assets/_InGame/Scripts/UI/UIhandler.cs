@@ -35,7 +35,7 @@ public class UIhandler : MonoBehaviour
     }
     public void EndGame()
     {
-        SoundManager.Instance.PlayEndTheGame();
+        SoundManager.Instance?.PlayEndTheGame();
         Game_FinishedUIPanel.SetActive(true);
 
     }

@@ -280,11 +280,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameData: {fileID: 11400000, guid: 01d1b5115d9d61d4281251820cd6664f, type: 2}
-  ImageSymbolContainer: {fileID: 286250150}
-  PoolSlots: []
-  processedObjects: []
+  PatternContainer: {fileID: 522704269}
   pattern: {fileID: 522704272}
   Canvas: {fileID: 1344775607}
+  PoolSlots: []
+  processedObjects: []
 --- !u!1001 &36334304
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -639,7 +639,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot (8)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -905,7 +906,7 @@ GameObject:
   - component: {fileID: 286250151}
   - component: {fileID: 286250152}
   m_Layer: 5
-  m_Name: ChooseField
+  m_Name: BottomField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1056,7 +1057,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot (4)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1871,14 +1873,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 779a9931a9479ea41be9c11527fed3f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  patternType: 2
   slotPrefab: {fileID: 595386332623090296, guid: 5bbe463ee3d005d469eab03bcca823da, type: 3}
-  patternType: 1
   mainCamera: {fileID: 963194227}
-  spacing: 210
   pyramidAContainer: {fileID: 1794946378}
   VegasAContainer: {fileID: 1913425186}
   ArtAContainer: {fileID: 279036595}
+  BottomFieldContainer: {fileID: 286250150}
   pointSystem: {fileID: 22551299}
+  spacing: 210
+  Slots: []
 --- !u!225 &522704273
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2129,7 +2133,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot (7)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -3298,7 +3303,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -3506,7 +3512,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot (9)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -3915,7 +3922,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot (5)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4119,7 +4127,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -5102,7 +5111,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -6008,7 +6018,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot (6)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -6527,7 +6538,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChooseSlot
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5518886525172618268, guid: 1f77a5cefb199c54988ce844d7ccd1e7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

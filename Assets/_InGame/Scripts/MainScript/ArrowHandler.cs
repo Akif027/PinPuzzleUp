@@ -8,11 +8,20 @@ public class ArrowHandler : MonoBehaviour
    public float rayLength = 10f;
    public LayerMask slotLayerMask;
    private Button arrowButton;
-   private List<GameObject> emptySlots = new List<GameObject>();
+   public List<GameObject> FilledSlots = new List<GameObject>();
 
    public List<GameObject> SlotContainer = new List<GameObject>();
 
-   bool CanCheckEmptySlot = false;
+   public List<GameObject> getAllSlotsList
+   {
+
+      get
+      {
+         return SlotContainer;
+      }
+
+   }
+
    void Start()
    {
       arrowButton = GetComponent<Button>();
@@ -27,53 +36,50 @@ public class ArrowHandler : MonoBehaviour
    private IEnumerator DelayedAddSlot()
    {
       yield return new WaitForSeconds(1); // Wait for 2 seconds
-      CanCheckEmptySlot = true;
+
       AddSlot(); // Call AddSlot after the wait
    }
 
-   void Update()
+   public bool isButtonIntractable()
    {
 
-      UpdateArrowButtonInteractable();
+      return arrowButton.interactable;
 
    }
-
-
-
-   private void UpdateArrowButtonInteractable()
+   public void disableOrEnableTheButton(bool isTrue)
    {
-      if (!CanCheckEmptySlot) return;
-      bool hasEmptySlots = CheckForEmptySlots();
 
-      arrowButton.interactable = hasEmptySlots;
+      arrowButton.interactable = isTrue;
+
    }
-
    private void HandleArrowButtonClick(bool playSound)
    {
-      CanCheckEmptySlot = true;
+
       if (playSound && SoundManager.Instance != null)
       {
          SoundManager.Instance.PlayOnButtonPress();
       }
 
-      emptySlots.Clear();
-      emptySlots = GetEmptySlotsInDirection();
+      FilledSlots.Clear();
+      FilledSlots = GetNotEmptySlotsInDirection();
 
-      if (emptySlots.Count == 0)
+      if (FilledSlots.Count == 0)
       {
-         Debug.Log("No empty slots found in the specified direction.");
+         Debug.Log(" empty slots found in the specified direction.");
+         GameManager.Instance.ClearList();
       }
       else
       {
-         EventManager.PopulateSlots(emptySlots);
-         GameManager.Instance.ClearList();
+         EventManager.PopulateSlots(FilledSlots);
+         EventManager.ButtonClickedSymbol();
+
       }
 
       // Update the button interactability after processing.
-      UpdateArrowButtonInteractable();
+      //  UpdateArrowButtonInteractable();
    }
 
-   private List<GameObject> GetEmptySlotsInDirection()
+   private List<GameObject> GetNotEmptySlotsInDirection()
    {
       var rayDirection = transform.right;
       RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, rayDirection, rayLength, slotLayerMask);
@@ -87,51 +93,40 @@ public class ArrowHandler : MonoBehaviour
       {
          var slot = hit.collider.gameObject;
          SlotContainer.Add(slot); // Add slot to SlotContainer
-         if (IsSlotEmpty(slot))
+         if (IsSlotNotEmpty(slot))
          {
-            emptySlots.Add(slot);
+            FilledSlots.Add(slot.transform.GetChild(0).gameObject);
+
          }
       }
 
-      return emptySlots;
+      return FilledSlots;
    }
    private void AddSlot()
    {
-      emptySlots.Clear();
-      GetEmptySlotsInDirection();
+      FilledSlots.Clear();
+      GetNotEmptySlotsInDirection();
       // Update the button interactability after processing.
-      UpdateArrowButtonInteractable();
+
 
    }
 
-   private bool IsSlotEmpty(GameObject slot)
+   private bool IsSlotNotEmpty(GameObject slot)
    {
-      // Check if the slot has any children, if not it's empty
+      // Check if the slot has any children
       if (slot.transform.childCount > 0)
       {
          var firstChild = slot.transform.GetChild(0);
-         return firstChild.childCount == 0;
+         return firstChild.childCount > 0;
       }
 
-      return true; // No children means the slot is empty
+      return false; // No children means the slot is empty, so return false
    }
 
-   private bool CheckForEmptySlots()
-   {
-      // This function checks if there are any empty slots in the SlotContainer
-      foreach (var slot in SlotContainer)
-      {
-         if (IsSlotEmpty(slot))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
 
    void OnDisable()
    {
       SlotContainer.Clear();
-      emptySlots.Clear();
+      FilledSlots.Clear();
    }
 }

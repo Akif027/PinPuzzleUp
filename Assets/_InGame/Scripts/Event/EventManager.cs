@@ -5,16 +5,16 @@ using System.Collections.Generic;
 public static class EventManager
 {
     // Define a delegate and event for button clicks
-    public static event Action<GameObject> OnButtonClickSymbol;
-    public static event Action<List<GameObject>> OnPopulateSlots;
-    public static void ButtonClickedSymbol(GameObject child)
+    public static event Action OnArrowButtonClick;
+    public static event Action<List<GameObject>> OnPopulateSymbol;
+    public static void ButtonClickedSymbol()
     {
-        OnButtonClickSymbol?.Invoke(child);
+        OnArrowButtonClick?.Invoke();
     }
 
     public static void PopulateSlots(List<GameObject> slots)
     {
-        OnPopulateSlots?.Invoke(slots);
+        OnPopulateSymbol?.Invoke(slots);
     }
 
 }
