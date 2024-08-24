@@ -157,13 +157,13 @@ public class Pattern : MonoBehaviour
         matchedSlots = uniqueMatchedSlots.Where(slot => slot.GetComponentInChildren<Slot>().slotType != SlotType.Red).ToList();
 
         List<GameObject> allMatchedSlots = redMatchedSlots.Concat(matchedSlots).ToList();
-
-        if (allMatchedSlots.Count >= 7 || (matchedSlots.Count >= 10))
+        foreach (var item in allMatchedSlots)
         {
-            foreach (var item in allMatchedSlots)
-            {
-                Debug.LogError(item);
-            }
+            Debug.LogError(item);
+        }
+        if (allMatchedSlots.Count >= 3 || (matchedSlots.Count >= 10))
+        {
+
             pointSystem?.CalculatePoints(allMatchedSlots);
             StartCoroutine(DestroySlotsAndShift(allMatchedSlots));
         }
@@ -204,9 +204,19 @@ public class Pattern : MonoBehaviour
                 else
                 {
                     // Check if the previous sequence had a match
-                    if (sequenceCount >= 3)
+                    if (currentType == SlotType.Red)
                     {
-                        matchedSlots.AddRange(currentSequence);
+                        if (sequenceCount >= 7)
+                        {
+                            matchedSlots.AddRange(currentSequence);
+                        }
+                    }
+                    else
+                    {
+                        if (sequenceCount >= 3)
+                        {
+                            matchedSlots.AddRange(currentSequence);
+                        }
                     }
 
                     // Start a new sequence
@@ -219,9 +229,19 @@ public class Pattern : MonoBehaviour
         }
 
         // Final check for the last sequence
-        if (sequenceCount >= 3)
+        if (currentType == SlotType.Red)
         {
-            matchedSlots.AddRange(currentSequence);
+            if (sequenceCount >= 7)
+            {
+                matchedSlots.AddRange(currentSequence);
+            }
+        }
+        else
+        {
+            if (sequenceCount >= 3)
+            {
+                matchedSlots.AddRange(currentSequence);
+            }
         }
     }
 
