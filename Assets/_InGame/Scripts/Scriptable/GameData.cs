@@ -24,6 +24,7 @@ public enum PatternType
 
 public enum SlotType
 {
+    None,
     Alarm,
     Camera,
     Car,

@@ -141,6 +141,7 @@ public class Pattern : MonoBehaviour
     }
 
     // Match Checking Methods
+    // Match Checking Methods
     public void CheckForMatches()
     {
         List<GameObject> matchedSlots = new List<GameObject>();
@@ -156,13 +157,17 @@ public class Pattern : MonoBehaviour
         matchedSlots = uniqueMatchedSlots.Where(slot => slot.GetComponentInChildren<Slot>().slotType != SlotType.Red).ToList();
 
         List<GameObject> allMatchedSlots = redMatchedSlots.Concat(matchedSlots).ToList();
-        Debug.LogError(allMatchedSlots.Count);
+
         if (allMatchedSlots.Count >= 7 || (matchedSlots.Count >= 10))
         {
+            foreach (var item in allMatchedSlots)
+            {
+                Debug.LogError(item);
+            }
             pointSystem?.CalculatePoints(allMatchedSlots);
             StartCoroutine(DestroySlotsAndShift(allMatchedSlots));
         }
-        else if (AreAllSlotsFilledAndNoMatches() || CannotFillMoreSymbols())
+        else if (CannotFillMoreSymbols())
         {
             UpdatePlayerPrefsScore();
             UIhandler.Instance.EndGame();
@@ -172,12 +177,13 @@ public class Pattern : MonoBehaviour
     // New method to check for repetitions by type
     private void CheckForRepetitionsByType(List<GameObject> matchedSlots)
     {
-        Dictionary<SlotType, List<GameObject>> slotGroups = new Dictionary<SlotType, List<GameObject>>();
-
         int rows = slotGrid.GetLength(0);
         int columns = slotGrid.GetLength(1);
 
-        // Group slots by their type
+        SlotType currentType = SlotType.None;
+        int sequenceCount = 0;
+        List<GameObject> currentSequence = new List<GameObject>();
+
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < columns; j++)
@@ -188,59 +194,37 @@ public class Pattern : MonoBehaviour
                 if (slotComp == null) continue;
 
                 SlotType slotType = slotComp.slotType;
-                if (!slotGroups.ContainsKey(slotType))
+
+                if (slotType == currentType && currentType != SlotType.None)
                 {
-                    slotGroups[slotType] = new List<GameObject>();
+                    // Continue the sequence
+                    sequenceCount++;
+                    currentSequence.Add(slotComp.gameObject);
                 }
-                slotGroups[slotType].Add(slotComp.gameObject);
-            }
-        }
-
-        // Check if any group has enough repetitions to be considered a match
-        foreach (var group in slotGroups)
-        {
-            if (group.Value.Count >= 3) // Replace 3 with your repetition threshold
-            {
-                matchedSlots.AddRange(group.Value);
-            }
-        }
-    }
-
-    private void CheckPatternForMatches(List<GameObject> matchedSlots, bool horizontal)
-    {
-        int rows = slotGrid.GetLength(0);
-        int columns = slotGrid.GetLength(1);
-
-        int maxI = horizontal ? rows : rows - 2;
-        int maxJ = horizontal ? columns - 2 : columns;
-
-        for (int i = 0; i < maxI; i++)
-        {
-            for (int j = 0; j < maxJ; j++)
-            {
-                if (slotGrid[i, j] == null) continue;
-
-                GameObject slot1 = slotGrid[i, j];
-                GameObject slot2 = horizontal ? slotGrid[i, j + 1] : slotGrid[i + 1, j];
-                GameObject slot3 = horizontal ? slotGrid[i, j + 2] : slotGrid[i + 2, j];
-
-                if (slot1 != null && slot2 != null && slot3 != null)
+                else
                 {
-                    Slot slotComp1 = slot1.GetComponentInChildren<Slot>();
-                    Slot slotComp2 = slot2.GetComponentInChildren<Slot>();
-                    Slot slotComp3 = slot3.GetComponentInChildren<Slot>();
-
-                    if (slotComp1 != null && slotComp2 != null && slotComp3 != null &&
-                        slotComp1.slotType == slotComp2.slotType && slotComp2.slotType == slotComp3.slotType)
+                    // Check if the previous sequence had a match
+                    if (sequenceCount >= 3)
                     {
-                        matchedSlots.Add(slotComp1.gameObject);
-                        matchedSlots.Add(slotComp2.gameObject);
-                        matchedSlots.Add(slotComp3.gameObject);
+                        matchedSlots.AddRange(currentSequence);
                     }
+
+                    // Start a new sequence
+                    currentType = slotType;
+                    sequenceCount = 1;
+                    currentSequence.Clear();
+                    currentSequence.Add(slotComp.gameObject);
                 }
             }
         }
+
+        // Final check for the last sequence
+        if (sequenceCount >= 3)
+        {
+            matchedSlots.AddRange(currentSequence);
+        }
     }
+
 
     private IEnumerator DestroySlotsAndShift(List<GameObject> matchedSlots)
     {
@@ -344,18 +328,6 @@ public class Pattern : MonoBehaviour
         }
     }
 
-    public bool AreAllSlotsFilledAndNoMatches()
-    {
-        bool allSlotsFilled = Slots.All(slot => slot.transform.childCount > 0);
-
-        List<GameObject> matchedSlots = new List<GameObject>();
-        CheckPatternForMatches(matchedSlots, true);  // Horizontal
-        CheckPatternForMatches(matchedSlots, false); // Vertical
-
-        bool noMatches = matchedSlots.Count == 0;
-
-        return allSlotsFilled && noMatches;
-    }
 
     public bool CannotFillMoreSymbols()
     {

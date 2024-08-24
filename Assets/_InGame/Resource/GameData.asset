@@ -19,4 +19,16 @@ MonoBehaviour:
   OnComboA: {fileID: 8300000, guid: e15529ed0c9d5ec499cbc7d677d15beb, type: 3}
   OnButtonPressA: {fileID: 8300000, guid: 28bc86eab389b2446ae51d83873ff930, type: 3}
   SlotsList:
+  - {fileID: -2187692947382446738, guid: 20271ada42ec5b6498bd23a9009dfb0c, type: 3}
+  - {fileID: -819197634215814595, guid: 03de13bc6a47fd147bd87c3e4fe3d30b, type: 3}
+  - {fileID: 3701158097726260979, guid: 5112654809aa176408f3d46971f6a93b, type: 3}
+  - {fileID: 3701158097726260979, guid: e85adc63f16d91842a0ae0bd01f53177, type: 3}
+  - {fileID: 3701158097726260979, guid: ff2025b5bb03dea488160b703a377732, type: 3}
+  - {fileID: 8221334008273812008, guid: a4f337b1dfd987a4784697a764903ad4, type: 3}
+  - {fileID: 6129974225745357345, guid: c8974ec1cfcbfa94fb67b41b6a8e587e, type: 3}
+  - {fileID: 1446744608862373349, guid: ba025b5b112a89249aa6029dfcf9032b, type: 3}
+  - {fileID: 3701158097726260979, guid: 55836436cf8eeeb47a49dca45523de62, type: 3}
   - {fileID: -5886178727858426611, guid: bfb02ad7e6abe8048832aec32f1943b8, type: 3}
+  - {fileID: 3701158097726260979, guid: ef1f98fe5840bce48b037984bce4fa07, type: 3}
+  - {fileID: 3821725870159819342, guid: 83966e65383125442afa3eae051ba5af, type: 3}
+  - {fileID: 3701158097726260979, guid: ee2a9c42e6398ce40b082341773e5730, type: 3}
