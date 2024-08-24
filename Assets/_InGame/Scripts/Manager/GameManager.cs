@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         Slot existingSlot = parent.GetComponentInChildren<Slot>();
         if (existingSlot != null)
         {
-            Debug.Log($"Slot found in {existingSlot.gameObject.name} under {parent.parent.name}");
+            //   Debug.Log($"Slot found in {existingSlot.gameObject.name} under {parent.parent.name}");
             return true;
         }
         return false;
@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
         {
             if (processedObject != null)
             {
-                Debug.Log($"Destroying: {processedObject.name}");
+                //   Debug.Log($"Destroying: {processedObject.name}");
                 if (canDestroy) Destroy(processedObject);
             }
         }
@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (var obj in processedObjects_)
         {
-            Debug.Log($"Processing: {obj.name}");
+            // Debug.Log($"Processing: {obj.name}");
 
             if (processedObjects.Contains(obj)) return;
 

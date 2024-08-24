@@ -157,10 +157,7 @@ public class Pattern : MonoBehaviour
         matchedSlots = uniqueMatchedSlots.Where(slot => slot.GetComponentInChildren<Slot>().slotType != SlotType.Red).ToList();
 
         List<GameObject> allMatchedSlots = redMatchedSlots.Concat(matchedSlots).ToList();
-        foreach (var item in allMatchedSlots)
-        {
-            Debug.LogError(item);
-        }
+
         if (allMatchedSlots.Count >= 3 || (matchedSlots.Count >= 10))
         {
 
@@ -401,7 +398,7 @@ public class Pattern : MonoBehaviour
     public bool IsPoolFilledMoreThan10OrRedRepetition()
     {
         int filledSlotsCount = 0;
-        int redSymbolCount = 0;
+        // int redSymbolCount = 0;
 
         foreach (var slotObject in Slots)
         {
@@ -413,14 +410,14 @@ public class Pattern : MonoBehaviour
                     filledSlotsCount++;
 
                     // Check if the slot contains a red symbol
-                    if (slotComponent.slotType == SlotType.Red)
-                    {
-                        redSymbolCount++;
-                        // Debug.LogError(redSymbolCount);
-                    }
+                    // if (slotComponent.slotType == SlotType.Red)
+                    // {
+                    //     redSymbolCount++;
+                    //     // Debug.LogError(redSymbolCount);
+                    // }
 
                     // If either condition is met, return true
-                    if (filledSlotsCount >= 10 || redSymbolCount >= 7)
+                    if (filledSlotsCount >= 10 /*|| redSymbolCount >= 7 */)
                     {
                         return true;
                     }
