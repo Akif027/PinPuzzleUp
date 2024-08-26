@@ -141,7 +141,6 @@ public class Pattern : MonoBehaviour
     }
 
     // Match Checking Methods
-    // Match Checking Methods
     public void CheckForMatches()
     {
         List<GameObject> matchedSlots = new List<GameObject>();
@@ -160,7 +159,6 @@ public class Pattern : MonoBehaviour
 
         if (allMatchedSlots.Count >= 3 || (matchedSlots.Count >= 10))
         {
-
             pointSystem?.CalculatePoints(allMatchedSlots);
             StartCoroutine(DestroySlotsAndShift(allMatchedSlots));
         }
@@ -177,9 +175,7 @@ public class Pattern : MonoBehaviour
         int rows = slotGrid.GetLength(0);
         int columns = slotGrid.GetLength(1);
 
-        SlotType currentType = SlotType.None;
-        int sequenceCount = 0;
-        List<GameObject> currentSequence = new List<GameObject>();
+        Dictionary<SlotType, List<GameObject>> slotTypeGroups = new Dictionary<SlotType, List<GameObject>>();
 
         for (int i = 0; i < rows; i++)
         {
@@ -192,52 +188,33 @@ public class Pattern : MonoBehaviour
 
                 SlotType slotType = slotComp.slotType;
 
-                if (slotType == currentType && currentType != SlotType.None)
+                if (!slotTypeGroups.ContainsKey(slotType))
                 {
-                    // Continue the sequence
-                    sequenceCount++;
-                    currentSequence.Add(slotComp.gameObject);
+                    slotTypeGroups[slotType] = new List<GameObject>();
                 }
-                else
-                {
-                    // Check if the previous sequence had a match
-                    if (currentType == SlotType.Red)
-                    {
-                        if (sequenceCount >= 7)
-                        {
-                            matchedSlots.AddRange(currentSequence);
-                        }
-                    }
-                    else
-                    {
-                        if (sequenceCount >= 3)
-                        {
-                            matchedSlots.AddRange(currentSequence);
-                        }
-                    }
 
-                    // Start a new sequence
-                    currentType = slotType;
-                    sequenceCount = 1;
-                    currentSequence.Clear();
-                    currentSequence.Add(slotComp.gameObject);
-                }
+                slotTypeGroups[slotType].Add(slotComp.gameObject);
             }
         }
 
-        // Final check for the last sequence
-        if (currentType == SlotType.Red)
+        foreach (var group in slotTypeGroups)
         {
-            if (sequenceCount >= 7)
+            SlotType slotType = group.Key;
+            List<GameObject> slots = group.Value;
+
+            if (slotType == SlotType.Red)
             {
-                matchedSlots.AddRange(currentSequence);
+                if (slots.Count >= 7)
+                {
+                    matchedSlots.AddRange(slots);
+                }
             }
-        }
-        else
-        {
-            if (sequenceCount >= 3)
+            else
             {
-                matchedSlots.AddRange(currentSequence);
+                if (slots.Count >= 3)
+                {
+                    matchedSlots.AddRange(slots);
+                }
             }
         }
     }

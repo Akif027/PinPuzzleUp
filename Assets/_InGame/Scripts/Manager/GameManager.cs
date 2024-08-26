@@ -59,8 +59,15 @@ public class GameManager : MonoBehaviour
         // Iterate through all children recursively
         foreach (Transform child in parentContainer.GetComponentsInChildren<Transform>(true))
         {
-            if (child.name == "SymbolPos" && !DoesSlotExistInHierarchy(child))
+            if (child.name == "SymbolPos")
             {
+                // Destroy the existing slot GameObject if it exists
+                Slot existingSlot = child.GetComponentInChildren<Slot>();
+                if (existingSlot != null)
+                {
+                    Destroy(existingSlot.gameObject);
+                }
+
                 // Choose a random value between 0 and the total probability
                 float randomValue = UnityEngine.Random.Range(0f, totalProbability);
                 float cumulativeProbability = 0f;

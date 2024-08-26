@@ -41,24 +41,24 @@ public class UIhandler : MonoBehaviour
     }
     public void OpenExitMatchPanel()
     {
-        SoundManager.Instance.PlayOnButtonPress();
+        SoundManager.Instance?.PlayOnButtonPress();
         Game_ExitUIPanel.SetActive(true);
     }
 
     public void CloseExitMatchPanel()
     {
-        SoundManager.Instance.PlayOnButtonPress();
+        SoundManager.Instance?.PlayOnButtonPress();
         Game_ExitUIPanel.SetActive(false);
     }
     public void LoadTheScene(string S)
     {
-        SoundManager.Instance.PlayOnButtonPress();
-        CustomSceneManager.LoadSceneAsync(S);
+        SoundManager.Instance?.PlayOnButtonPress();
+        CustomSceneManager.LoadScene(S);
 
     }
     public void Restart()
     {
-        SoundManager.Instance.PlayOnButtonPress();
+        SoundManager.Instance?.PlayOnButtonPress();
         CustomSceneManager.ReloadCurrentScene();
 
     }
