@@ -75,8 +75,7 @@ public class ArrowHandler : MonoBehaviour
 
       }
 
-      // Update the button interactability after processing.
-      //  UpdateArrowButtonInteractable();
+
    }
 
    private List<GameObject> GetNotEmptySlotsInDirection()
@@ -106,8 +105,6 @@ public class ArrowHandler : MonoBehaviour
    {
       FilledSlots.Clear();
       GetNotEmptySlotsInDirection();
-      // Update the button interactability after processing.
-
 
    }
 

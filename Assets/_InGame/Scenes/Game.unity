@@ -1834,7 +1834,6 @@ GameObject:
   m_Component:
   - component: {fileID: 522704270}
   - component: {fileID: 522704272}
-  - component: {fileID: 522704273}
   m_Layer: 5
   m_Name: Patterns
   m_TagString: Untagged
@@ -1883,18 +1882,6 @@ MonoBehaviour:
   pointSystem: {fileID: 22551299}
   spacing: 210
   Slots: []
---- !u!225 &522704273
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 522704269}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!224 &554083957 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8479716157642044505, guid: ef28616972cdb2743a37747ade6a3bc6, type: 3}
